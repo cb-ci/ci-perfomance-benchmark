@@ -190,6 +190,10 @@ To isolate the performance impact of specific jobs:
 
 ## Practical Snippets
 
+### Managing Repos, Branches and PRs
+
+See [gh-scripts](scripts/gh-scripts)
+
 ### File IO
 
 See [fileIO](scripts/fileIO)
