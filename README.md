@@ -51,6 +51,22 @@ Compare the performance of two CI Controller setups:
 
 Both controllers have identical configurations, including plugins, agent setups, and reference pipelines.
 
+### Scope
+
+**In Scope:**
+
+*   Performance comparison between the Source Controller (EC2/EBS) and Target Controller (EKS/EFS).
+*   Controller-level metrics (CPU, memory, GC, etc.).
+*   Pipeline-level metrics (throughput, queue time, etc.).
+*   File I/O performance on `JENKINS_HOME`.
+
+**Out of Scope:**
+
+*   Performance of Jenkins agents under load.
+*   Network latency between agents and the controller.
+*   Performance of external services integrated with Jenkins (e.g., artifact repositories, Git providers).
+
+
 ### Strategy
 
 The primary approach is to measure the CPU and memory consumption **delta against a baseline** for various workloads. This involves:
@@ -75,20 +91,7 @@ The following key performance indicators (KPIs) will be tracked:
 * **File IO/volume** IOOPS,throughput
 * **Pipeline End-to-End exection time**
 
-### Scope
-
-**In Scope:**
-
-*   Performance comparison between the Source Controller (EC2/EBS) and Target Controller (EKS/EFS).
-*   Controller-level metrics (CPU, memory, GC, etc.).
-*   Pipeline-level metrics (throughput, queue time, etc.).
-*   File I/O performance on `JENKINS_HOME`.
-
-**Out of Scope:**
-
-*   Performance of Jenkins agents under load.
-*   Network latency between agents and the controller.
-*   Performance of external services integrated with Jenkins (e.g., artifact repositories, Git providers).
+## Requirements/Tooling
 
 ### Entry and Exit Criteria
 
@@ -103,6 +106,29 @@ The following key performance indicators (KPIs) will be tracked:
 *   All test scenarios have been executed at least three times on both controller setups.
 *   Key metrics have been collected and documented.
 *   A final analysis report comparing the performance of the two setups is complete.
+
+### Tooling Stack
+
+* **Load Generation:**
+  * **Locust:** For hitting Jenkins job REST API to trigger builds. [Locust README](scripts/loadtestsLocust/README.md)
+  * **gh CLI:** For creating commits and pull requests at scale.
+* **Orchestration:**
+  * Target Controller: A dedicated **"Load Orchestrator" Jenkins controller** to manage test execution.
+  * Source Controller: A dedicated **"Load Orchestrator" Jenkins controller** to manage test execution. If a Production controller be carefully with the workload simulations
+* **Observability:**
+  * **Metrics:** Prometheus + Grafana for Jenkins, JVM, VM, and Kubernetes metrics.
+  * **Traces:** OpenTelemetry (Jenkins OTel plugin) for distributed tracing.
+  * **Logs:** Console log/Pipeline Explorer,Splunk, ELK, or other log aggregation solutions.
+
+### Key Performance Indicators (SLOs)
+
+* **Throughput:** ≥ X builds/min per controller.
+* **Queue Time (P95):** < 15s (steady) / < 60s (burst).
+* **Job Start Latency (P95):** < 20s (steady) / < 90s (burst).
+* **Controller Headroom:** CPU < 70%, Heap < 70%, GC Pause (P99) < 200ms.
+* **Pipeline End-to-End execution time** See traces or Pipeline Explorer
+
+---
 
 ### Roles and Responsibilities
 
@@ -165,30 +191,6 @@ To isolate the performance impact of specific jobs:
 
 ---
 
-## Requirements/Tooling
-
-### Tooling Stack
-
-* **Load Generation:**
-  * **Locust:** For hitting Jenkins job REST API to trigger builds. [Locust README](scripts/loadtestsLocust/README.md)
-  * **gh CLI:** For creating commits and pull requests at scale.
-* **Orchestration:**
-  * Target Controller: A dedicated **"Load Orchestrator" Jenkins controller** to manage test execution.
-  * Source Controller: A dedicated **"Load Orchestrator" Jenkins controller** to manage test execution. If a Production controller be carefully with the workload simulations
-* **Observability:**
-  * **Metrics:** Prometheus + Grafana for Jenkins, JVM, VM, and Kubernetes metrics.
-  * **Traces:** OpenTelemetry (Jenkins OTel plugin) for distributed tracing.
-  * **Logs:** Console log/Pipeline Explorer,Splunk, ELK, or other log aggregation solutions.
-
-### Key Performance Indicators (SLOs)
-
-* **Throughput:** ≥ X builds/min per controller.
-* **Queue Time (P95):** < 15s (steady) / < 60s (burst).
-* **Job Start Latency (P95):** < 20s (steady) / < 90s (burst).
-* **Controller Headroom:** CPU < 70%, Heap < 70%, GC Pause (P99) < 200ms.
-* **Pipeline End-to-End execution time** See traces or Pipeline Explorer
-
----
 
 ## Practical Snippets
 
