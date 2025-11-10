@@ -190,6 +190,10 @@ To isolate the performance impact of specific jobs:
 
 ## Practical Snippets
 
+### File IO
+
+See [fileIO](scripts/fileIO)
+
 ### Sample basic Pipelines
 
 See [pipelines](pipelines). 
