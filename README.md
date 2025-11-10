@@ -23,6 +23,19 @@ This document outlines a comprehensive strategy for performance-testing Jenkins 
 
 ## Test Plan Summary
 
+
+### About Controller Performance
+
+On a healthy setup, the **controller** is primarily responsible for:
+
+* **Pipeline Engine:** Executing Groovy code in `Jenkinsfile` and shared libraries.
+* **Scheduling:** Managing the build queue and executor metadata.
+* **Logging and UI:** Handling console output and user interface elements.
+* **Plugin Overhead:** Managing plugins like GitHub Branch Source and webhooks.
+
+Since Jenkins controllers are I/O bound, the performance of the storage used for `JENKINS_HOME` is critical. 
+The complexity of Jenkinsfiles, the efficiency of shared libraries, and the volume performance, all contribute to the controller's footprint.
+
 ### Goal
 
 Compare the performance of two CI Controller setups:
@@ -36,15 +49,17 @@ Both controllers have identical configurations, including plugins, agent setups,
 
 The primary approach is to measure the CPU and memory consumption **delta against a baseline** for various workloads. This involves:
 
-1. **Establishing a Baseline:** Measure CPU and memory usage when the controller is idle.
-2. **Running Test Workloads:** Execute representative pipelines at different scales (e.g., 1, 10, 50 concurrent runs).
+1. **Establishing a Baseline:** 
+   * Measure CPU and memory usage when the controller is idle.
+   * Measure file IO (latency, IOOPS and throughput) 
+2. **Running Test Workloads:** Execute representative Pipelines at different scales (e.g., 1, 10, 50 concurrent runs).
 3. **Analyzing the Delta:** Subtract the baseline measurements from the workload measurements to determine the approximate resource cost per execution.
 
 ### Key Metrics
 
 The following key performance indicators (KPIs) will be tracked:
 
-* **JVM Heap and Old Gen Usage**
+* **JVM Heap, Non-Heap and Old Gen Usage**
 * **Process CPU Load**
 * **Garbage Collection (GC) Pause Time**
 * **Throughput** (builds/min)
@@ -53,19 +68,6 @@ The following key performance indicators (KPIs) will be tracked:
 * **Agent Provisioning Time**
 * **File IO/volume** IOOPS,throughput
 * **Pipeline End-to-End exection time**
-
----
-
-## Understanding Controller Performance
-
-On a healthy setup, the **controller** is primarily responsible for:
-
-* **Pipeline Engine:** Executing Groovy code in `Jenkinsfile` and shared libraries.
-* **Scheduling:** Managing the build queue and executor metadata.
-* **Logging and UI:** Handling console output and user interface elements.
-* **Plugin Overhead:** Managing plugins like GitHub Branch Source and webhooks.
-
-Since Jenkins controllers are I/O bound, the performance of the storage used for `JENKINS_HOME` is critical. The complexity of your Jenkinsfile, the efficiency of your shared libraries, and the volume of log output all contribute to the controller's footprint.
 
 ---
 
@@ -78,8 +80,7 @@ To simulate real-world usage, we will use a mix of test scenarios:
 1. **Steady-State Build Mix:** A combination of short, medium, and heavy pipelines.
 2. **PR/Build Storm:** A high volume of webhooks in a short period.
 3. **Multibranch Indexing Wave:** Concurrent indexing of a large number of repositories.
-4. **Agent Churn:** Rapid creation and teardown of ephemeral agents.
-5. **Artifact Pressure:** Parallel uploads and downloads of large artifacts.
+4. **Agent Churn:** (Optional): Rapid creation and tear down of ephemeral agents.
 
 ### Testing per-Pipeline
 
@@ -95,7 +96,7 @@ To isolate the performance impact of specific jobs:
 ### Tooling Stack
 
 * **Load Generation:**
-  * **Locust:** For hitting Jenkins webhook endpoints and REST API. [Locust README](scripts/loadtestsLocust/README.md)
+  * **Locust:** For hitting Jenkins job REST API to trigger builds. [Locust README](scripts/loadtestsLocust/README.md)
   * **gh CLI:** For creating commits and pull requests at scale.
 * **Orchestration:**
   * Target Controller: A dedicated **"Load Orchestrator" Jenkins controller** to manage test execution.
@@ -103,7 +104,7 @@ To isolate the performance impact of specific jobs:
 * **Observability:**
   * **Metrics:** Prometheus + Grafana for Jenkins, JVM, VM, and Kubernetes metrics.
   * **Traces:** OpenTelemetry (Jenkins OTel plugin) for distributed tracing.
-  * **Logs:** Splunk, ELK, or other log aggregation solutions.
+  * **Logs:** Console log/Pipeline Explorer,Splunk, ELK, or other log aggregation solutions.
 
 ### Key Performance Indicators (SLOs)
 
@@ -111,7 +112,7 @@ To isolate the performance impact of specific jobs:
 * **Queue Time (P95):** < 15s (steady) / < 60s (burst).
 * **Job Start Latency (P95):** < 20s (steady) / < 90s (burst).
 * **Controller Headroom:** CPU < 70%, Heap < 70%, GC Pause (P99) < 200ms.
-* **Pipeline End-to-End execution time**
+* **Pipeline End-to-End execution time** See traces or Pipeline Explorer
 
 ---
 
@@ -158,6 +159,55 @@ for i in {1..10}; do
   curl -s -u "$USER:$TOKEN" -H "Jenkins-Crumb:$CRUMB" \
     -X POST "$JENKINS/job/$JOB/buildWithParameters?PROFILE=medium&cause=perf"
 done
+```
+
+### Simple Pipeline End-to-End duration
+
+
+Simple Pipeline End-to-End duration time can be retrieved by 
+
+* The UI `open $BUILD_URL` 
+* or by the build_url api json endpoint:  `curl -u $TOKEN "${BUILD_URL}/api/json" | jq`
+
+result example:
+```
+{
+  "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+  "actions": [
+   ...
+    {
+      "_class": "jenkins.metrics.impl.TimeInQueueAction",
+      "blockedDurationMillis": 0,
+      "blockedTimeMillis": 0,
+      "buildableDurationMillis": 0,
+      "buildableTimeMillis": 4797,
+      "buildingDurationMillis": 7730,
+      "executingTimeMillis": 1814,
+      "executorUtilization": 0.23,
+      "subTaskCount": 1,
+      "waitingDurationMillis": 0,
+      "waitingTimeMillis": 0
+    },
+...
+  "duration": 7730,
+  "estimatedDuration": 9641,
+  "id": "2",
+  "keepLog": false,
+  "number": 2,
+  "queueId": 504,
+  "result": "SUCCESS",
+  "timestamp": 1759332317591,
+  "url": "https://dev.sda.acaternberg.flow-training.beescloud.com/casc-pipeline-templates/job/HW/2/",
+  ...
+}
+```
+
+Which means:
+
+```
+4.8 sec waiting;
+7.7 sec build duration;
+7.7 sec total from scheduled to completion
 ```
 
 ---
