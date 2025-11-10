@@ -5,19 +5,19 @@
 * [Test Plan Summary](#test-plan-summary)
   * [About Controller Performance](#about-controller-performance)
   * [Goal](#goal)
+  * [Scope](#scope)
   * [Strategy](#strategy)
   * [Key Metrics](#key-metrics)
-  * [Scope](#scope)
+* [Requirements/Tooling](#requirementstooling)
   * [Entry and Exit Criteria](#entry-and-exit-criteria)
+  * [Tooling Stack](#tooling-stack)
   * [Roles and Responsibilities](#roles-and-responsibilities)
-  * [Risks and Mitigations](#risks-and-mitigations)
-  * [Schedule/Timeline](#schedule/timeline)
+* [Key Performance Indicators (SLOs)](#key-performance-indicators-slos)
+* [Risks and Mitigations](#risks-and-mitigations)
+* [Schedule/Timeline](#scheduletimeline)
 * [Workload and Testing Strategy](#workload-and-testing-strategy)
   * [Pipelines and Workload Models](#pipelines-and-workload-models)
   * [Testing per-Pipeline](#testing-per-pipeline)
-* [Requirements/Tooling](#requirementstooling)
-  * [Tooling Stack](#tooling-stack)
-  * [Key Performance Indicators (SLOs)](#key-performance-indicators-slos)
 * [Practical Snippets](#practical-snippets)
   * [Locust for Load Testing](#locust-for-load-testing)
   * [PR Storm with gh CLI](#pr-storm-with-gh-cli)
@@ -93,8 +93,6 @@ The following key performance indicators (KPIs) will be tracked:
 
 ## Requirements/Tooling
 
-### Entry and Exit Criteria
-
 **Entry Criteria:**
 
 *   Both Source and Target controllers are fully configured and operational.
@@ -120,7 +118,15 @@ The following key performance indicators (KPIs) will be tracked:
   * **Traces:** OpenTelemetry (Jenkins OTel plugin) for distributed tracing.
   * **Logs:** Console log/Pipeline Explorer,Splunk, ELK, or other log aggregation solutions.
 
-### Key Performance Indicators (SLOs)
+### Roles and Responsibilities
+
+| Role               | Responsibilities                                        |
+|--------------------| ------------------------------------------------------- |
+| **Test Lead**      | Overall test plan, execution, and analysis.             |
+| **Infra Engineer** | Setup and maintenance of controller environments.       |
+| **Developer**      | Development and maintenance of test pipelines.          |
+
+## Key Performance Indicators (SLOs)
 
 * **Throughput:** ≥ X builds/min per controller.
 * **Queue Time (P95):** < 15s (steady) / < 60s (burst).
@@ -130,15 +136,7 @@ The following key performance indicators (KPIs) will be tracked:
 
 ---
 
-### Roles and Responsibilities
-
-| Role                  | Responsibilities                                        |
-| --------------------- | ------------------------------------------------------- |
-| **Test Lead**         | Overall test plan, execution, and analysis.             |
-| **Infra Engineer**    | Setup and maintenance of controller environments.       |
-| **Developer**         | Development and maintenance of test pipelines.          |
-
-### Risks and Mitigations
+## Risks and Mitigations
 
 | Risk                                     | Mitigation                                                              |
 | ---------------------------------------- | ----------------------------------------------------------------------- |
@@ -146,14 +144,14 @@ The following key performance indicators (KPIs) will be tracked:
 | **API rate limiting from Git provider**  | Check rate limits and throttle tests, or use a dedicated test org.      |
 | **Environment instability**              | Monitor environments closely and have rollback plans in place.          |
 
-### Schedule/Timeline
+## Schedule/Timeline
 
 | Phase                 | Estimated Duration |
-| --------------------- | ------------------ |
-| **Environment Setup** | 3 days             |
-| **Baseline Testing**  | 2 days             |
-| **Workload Execution**| 5 days             |
-| **Analysis & Report** | 3 days             |
+| --------------------- |--------------------|
+| **Environment Setup** | less than 1 day    |
+| **Baseline Testing**  | 1 day              |
+| **Workload Execution**| less than 2 days   |
+| **Analysis & Report** | 1 day              |
 
 ---
 
