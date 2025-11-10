@@ -168,6 +168,7 @@ Suggestions for test/benchmark Pipelines
 * A simple reference MB Pipeline that
   * clones code (small to medium size repo)
   * writes an artifact to JENKINS_HOME (step: archiveArtifacts, to measure time by writing to the volume EBS vs EFS)
+  * See this pipelines for starting point: [pipelines](pipelines) (Need to be developed/adjusted further)
 * A reference/representative (real production Pipeline) 
   * fork the repository (single or few branches only)
   * adjust the Pipeline fork code/branch so it doesn't damage anything in production if it gets executed
@@ -188,6 +189,12 @@ To isolate the performance impact of specific jobs:
 
 
 ## Practical Snippets
+
+### Sample basic Pipelines
+
+See [pipelines](pipelines). 
+
+Note: These Pipelines can be developed further/adjusted 
 
 ### Locust for Load Testing
 
