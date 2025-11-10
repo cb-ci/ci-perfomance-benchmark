@@ -8,8 +8,8 @@
   * [Scope](#scope)
   * [Strategy](#strategy)
   * [Key Metrics](#key-metrics)
+* [Entry and Exit Criteria](#entry-and-exit-criteria)
 * [Requirements/Tooling](#requirementstooling)
-  * [Entry and Exit Criteria](#entry-and-exit-criteria)
   * [Tooling Stack](#tooling-stack)
   * [Roles and Responsibilities](#roles-and-responsibilities)
 * [Key Performance Indicators (SLOs)](#key-performance-indicators-slos)
@@ -25,12 +25,12 @@
   * [Simple Pipeline End-to-End duration](#simple-pipeline-end-to-end-duration)
 * [Common Bottlenecks and Fixes](#common-bottlenecks-and-fixes)
 
-This document outlines a comprehensive strategy for performance-testing Jenkins controllers, providing a step-by-step guide to measuring and optimizing platform and build metrics.
 
 ## Test Plan Summary
 
+This document outlines a comprehensive strategy for performance-testing Jenkins controllers, providing a step-by-step guide to measuring and optimizing platform and build metrics.
 
-### About Controller Performance
+## About Controller Performance
 
 On a healthy setup, the **controller** is primarily responsible for:
 
@@ -42,7 +42,7 @@ On a healthy setup, the **controller** is primarily responsible for:
 Since Jenkins controllers are I/O bound, the performance of the storage used for `JENKINS_HOME` is critical. 
 The complexity of Jenkinsfiles, the efficiency of shared libraries, and the volume performance, all contribute to the controller's footprint.
 
-### Goal
+## Goal
 
 Compare the performance of two CI Controller setups:
 
@@ -51,7 +51,7 @@ Compare the performance of two CI Controller setups:
 
 Both controllers have identical configurations, including plugins, agent setups, and reference pipelines.
 
-### Scope
+## Scope
 
 **In Scope:**
 
@@ -67,7 +67,7 @@ Both controllers have identical configurations, including plugins, agent setups,
 *   Performance of external services integrated with Jenkins (e.g., artifact repositories, Git providers).
 
 
-### Strategy
+## Strategy
 
 The primary approach is to measure the CPU and memory consumption **delta against a baseline** for various workloads. This involves:
 
@@ -77,7 +77,7 @@ The primary approach is to measure the CPU and memory consumption **delta agains
 2. **Running Test Workloads:** Execute representative Pipelines at different scales (e.g., 1, 10, 50 concurrent runs).
 3. **Analyzing the Delta:** Subtract the baseline measurements from the workload measurements to determine the approximate resource cost per execution.
 
-### Key Metrics
+## Key Metrics
 
 The following key performance indicators (KPIs) will be tracked:
 
@@ -91,21 +91,19 @@ The following key performance indicators (KPIs) will be tracked:
 * **File IO/volume** IOOPS,throughput
 * **Pipeline End-to-End exection time**
 
-## Requirements/Tooling
-
-**Entry Criteria:**
+## Entry Criteria
 
 *   Both Source and Target controllers are fully configured and operational.
 *   The observability stack (Prometheus, Grafana, OpenTelemetry) is in place and collecting data.
 *   Test pipelines and load generation scripts are ready.
 
-**Exit Criteria:**
+## Exit Criteria
 
 *   All test scenarios have been executed at least three times on both controller setups.
 *   Key metrics have been collected and documented.
 *   A final analysis report comparing the performance of the two setups is complete.
 
-### Tooling Stack
+## Tooling Stack
 
 * **Load Generation:**
   * **Locust:** For hitting Jenkins job REST API to trigger builds. [Locust README](scripts/loadtestsLocust/README.md)
@@ -118,7 +116,7 @@ The following key performance indicators (KPIs) will be tracked:
   * **Traces:** OpenTelemetry (Jenkins OTel plugin) for distributed tracing.
   * **Logs:** Console log/Pipeline Explorer,Splunk, ELK, or other log aggregation solutions.
 
-### Roles and Responsibilities
+## Roles and Responsibilities
 
 | Role               | Responsibilities                                        |
 |--------------------| ------------------------------------------------------- |
