@@ -3,20 +3,21 @@
 **Table of Contents**
 
 * [Test Plan Summary](#test-plan-summary)
+  * [About Controller Performance](#about-controller-performance)
   * [Goal](#goal)
   * [Strategy](#strategy)
   * [Key Metrics](#key-metrics)
-* [Understanding Controller Performance](#understanding-controller-performance)
 * [Workload and Testing Strategy](#workload-and-testing-strategy)
-  * [Workload Models](#workload-models)
+  * [Pipelines and Workload Models](#pipelines-and-workload-models)
   * [Testing per-Pipeline](#testing-per-pipeline)
-* [Tooling and Observability](#tooling-and-observability)
+* [Requirements/Tooling](#requirementstooling)
   * [Tooling Stack](#tooling-stack)
   * [Key Performance Indicators (SLOs)](#key-performance-indicators-slos)
 * [Practical Snippets](#practical-snippets)
   * [Locust for Load Testing](#locust-for-load-testing)
   * [PR Storm with gh CLI](#pr-storm-with-gh-cli)
   * [Trigger Builds via REST API](#trigger-builds-via-rest-api)
+  * [Simple Pipeline End-to-End duration](#simple-pipeline-end-to-end-duration)
 * [Common Bottlenecks and Fixes](#common-bottlenecks-and-fixes)
 
 This document outlines a comprehensive strategy for performance-testing Jenkins controllers, providing a step-by-step guide to measuring and optimizing platform and build metrics.
