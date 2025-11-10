@@ -73,6 +73,23 @@ The following key performance indicators (KPIs) will be tracked:
 
 ## Workload and Testing Strategy
 
+### Pipelines
+
+Suggestions for test/benchmark Pipelines
+
+* Create a reference MB Pipeline that
+  * uses GitHub app authentication
+  * clones code (small to medium size repo)
+  * writes an artifact to JENKINS_HOME (step: archiveArtifacts, to measure time by writing to the volume EBS vs EFS)
+* Use a reference/representative production Pipeline 
+  * uses GitHub app authentication
+  * fork the repository (single or few branches only)
+  * adjust the Pipeline fork code/branch so it doesn't damage anything in production if it gets executed
+* test on both Pipelines
+  * indexing
+  * scanning
+  * build time/performance
+
 ### Workload Models
 
 To simulate real-world usage, we will use a mix of test scenarios:
