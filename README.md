@@ -73,31 +73,28 @@ The following key performance indicators (KPIs) will be tracked:
 
 ## Workload and Testing Strategy
 
-### Pipelines
-
-Suggestions for test/benchmark Pipelines
-
-* Create a reference MB Pipeline that
-  * uses GitHub app authentication
-  * clones code (small to medium size repo)
-  * writes an artifact to JENKINS_HOME (step: archiveArtifacts, to measure time by writing to the volume EBS vs EFS)
-* Use a reference/representative production Pipeline 
-  * uses GitHub app authentication
-  * fork the repository (single or few branches only)
-  * adjust the Pipeline fork code/branch so it doesn't damage anything in production if it gets executed
-* test on both Pipelines
-  * indexing
-  * scanning
-  * build time/performance
-
-### Workload Models
+### Pipelines and Workload Models
 
 To simulate real-world usage, we will use a mix of test scenarios:
 
-1. **Steady-State Build Mix:** A combination of short, medium, and heavy pipelines.
-2. **PR/Build Storm:** A high volume of webhooks in a short period.
-3. **Multibranch Indexing Wave:** Concurrent indexing of a large number of repositories.
-4. **Agent Churn:** (Optional): Rapid creation and tear down of ephemeral agents.
+* **Steady-State Build Mix:** A combination of short, medium, and heavy pipelines.
+* **PR/Build Storm:** A high volume of webhooks in a short period.
+* **Multibranch Indexing Wave:** Concurrent indexing of a large number of repositories.
+* **Agent Churn:** (Optional): Rapid creation and tear down of ephemeral agents.
+
+Suggestions for test/benchmark Pipelines
+
+* A simple reference MB Pipeline that
+  * clones code (small to medium size repo)
+  * writes an artifact to JENKINS_HOME (step: archiveArtifacts, to measure time by writing to the volume EBS vs EFS)
+* A reference/representative (real production Pipeline) 
+  * fork the repository (single or few branches only)
+  * adjust the Pipeline fork code/branch so it doesn't damage anything in production if it gets executed
+* test/compare on both Pipelines
+  * MI Indexing and Scanning
+  * Scaling the number of builds/commits (1,5,10)
+  * Scaling the number of PRs (1,5,10)
+  * Build time/performance
 
 ### Testing per-Pipeline
 
