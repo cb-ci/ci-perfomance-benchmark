@@ -90,17 +90,17 @@ The following key performance indicators (KPIs) will be tracked:
 * **File IO/volume** IOOPS,throughput
 * **Pipeline End-to-End exection time**
 
-## Entry Criteria
+## Entry-and-Exit-Criteria
 
-*   Both Source and Target controllers are fully configured and operational.
-*   The observability stack (Prometheus, Grafana, OpenTelemetry) is in place and collecting data.
-*   Test pipelines and load generation scripts are ready.
+* Entry Criteria
+  *   Both Source and Target controllers are fully configured and operational.
+  *   The observability stack (Prometheus, Grafana, OpenTelemetry) is in place and collecting data.
+  *   Test pipelines and load generation scripts are ready.
 
-## Exit Criteria
-
-*   All test scenarios have been executed at least three times on both controller setups.
-*   Key metrics have been collected and documented.
-*   A final analysis report comparing the performance of the two setups is complete.
+* Exit Criteria
+  *   All test scenarios have been executed at least three times on both controller setups.
+  *   Key metrics have been collected and documented.
+  *   A final analysis report comparing the performance of the two setups is complete.
 
 ## Tooling Stack
 
