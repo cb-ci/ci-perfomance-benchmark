@@ -3,15 +3,15 @@
 **Table of Contents**
 
 * [Test Plan Summary](#test-plan-summary)
-  * [About Controller Performance](#about-controller-performance)
-  * [Goal](#goal)
-  * [Scope](#scope)
-  * [Strategy](#strategy)
-  * [Key Metrics](#key-metrics)
+* [About Controller Performance](#about-controller-performance)
+* [Goal](#goal)
+* [Scope](#scope)
+* [Strategy](#strategy)
+* [Key Metrics](#key-metrics)
 * [Entry and Exit Criteria](#entry-and-exit-criteria)
 * [Requirements/Tooling](#requirementstooling)
-  * [Tooling Stack](#tooling-stack)
-  * [Roles and Responsibilities](#roles-and-responsibilities)
+* [Tooling Stack](#tooling-stack)
+* [Roles and Responsibilities](#roles-and-responsibilities)
 * [Key Performance Indicators (SLOs)](#key-performance-indicators-slos)
 * [Risks and Mitigations](#risks-and-mitigations)
 * [Schedule/Timeline](#scheduletimeline)
@@ -24,7 +24,6 @@
   * [Trigger Builds via REST API](#trigger-builds-via-rest-api)
   * [Simple Pipeline End-to-End duration](#simple-pipeline-end-to-end-duration)
 * [Common Bottlenecks and Fixes](#common-bottlenecks-and-fixes)
-
 
 ## Test Plan Summary
 
@@ -225,10 +224,9 @@ JENKINS=https://jenkins.example
 USER=svc
 TOKEN=xxx
 JOB='perf/LoadJob'
-CRUMB=$(curl -s -u "$USER:$TOKEN" "$JENKINS/crumbIssuer/api/json" | jq -r .crumb)
 
 for i in {1..10}; do
-  curl -s -u "$USER:$TOKEN" -H "Jenkins-Crumb:$CRUMB" \
+  curl -s -u "$USER:$TOKEN" \
     -X POST "$JENKINS/job/$JOB/buildWithParameters?PROFILE=medium&cause=perf"
 done
 ```
