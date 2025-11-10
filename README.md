@@ -7,6 +7,11 @@
   * [Goal](#goal)
   * [Strategy](#strategy)
   * [Key Metrics](#key-metrics)
+  * [Scope](#scope)
+  * [Entry and Exit Criteria](#entry-and-exit-criteria)
+  * [Roles and Responsibilities](#roles-and-responsibilities)
+  * [Risks and Mitigations](#risks-and-mitigations)
+  * [Schedule/Timeline](#schedule/timeline)
 * [Workload and Testing Strategy](#workload-and-testing-strategy)
   * [Pipelines and Workload Models](#pipelines-and-workload-models)
   * [Testing per-Pipeline](#testing-per-pipeline)
@@ -69,6 +74,60 @@ The following key performance indicators (KPIs) will be tracked:
 * **Agent Provisioning Time**
 * **File IO/volume** IOOPS,throughput
 * **Pipeline End-to-End exection time**
+
+### Scope
+
+**In Scope:**
+
+*   Performance comparison between the Source Controller (EC2/EBS) and Target Controller (EKS/EFS).
+*   Controller-level metrics (CPU, memory, GC, etc.).
+*   Pipeline-level metrics (throughput, queue time, etc.).
+*   File I/O performance on `JENKINS_HOME`.
+
+**Out of Scope:**
+
+*   Performance of Jenkins agents under load.
+*   Network latency between agents and the controller.
+*   Performance of external services integrated with Jenkins (e.g., artifact repositories, Git providers).
+
+### Entry and Exit Criteria
+
+**Entry Criteria:**
+
+*   Both Source and Target controllers are fully configured and operational.
+*   The observability stack (Prometheus, Grafana, OpenTelemetry) is in place and collecting data.
+*   Test pipelines and load generation scripts are ready.
+
+**Exit Criteria:**
+
+*   All test scenarios have been executed at least three times on both controller setups.
+*   Key metrics have been collected and documented.
+*   A final analysis report comparing the performance of the two setups is complete.
+
+### Roles and Responsibilities
+
+| Role                  | Responsibilities                                        |
+| --------------------- | ------------------------------------------------------- |
+| **Test Lead**         | Overall test plan, execution, and analysis.             |
+| **Infra Engineer**    | Setup and maintenance of controller environments.       |
+| **Developer**         | Development and maintenance of test pipelines.          |
+
+### Risks and Mitigations
+
+| Risk                                     | Mitigation                                                              |
+| ---------------------------------------- | ----------------------------------------------------------------------- |
+| **Inaccurate test results**              | Run baseline tests and repeat each test multiple times for consistency. |
+| **API rate limiting from Git provider**  | Check rate limits and throttle tests, or use a dedicated test org.      |
+| **Environment instability**              | Monitor environments closely and have rollback plans in place.          |
+
+### Schedule/Timeline
+
+| Phase                 | Estimated Duration |
+| --------------------- | ------------------ |
+| **Environment Setup** | 3 days             |
+| **Baseline Testing**  | 2 days             |
+| **Workload Execution**| 5 days             |
+| **Analysis & Report** | 3 days             |
 
 ---
 
