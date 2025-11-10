@@ -1,24 +1,3 @@
-# 504 Nginx error (or equivalent)
-
-Avoid 504 
-
-NGINX Ingress (Kubernetes)
-
-Add annotations to your Ingress manifest:
-
-> kubectl edit ing <controller>
-
-```
-metadata:
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
-
-```
-
-
 # FIO Pod
 
 Here’s a **ready-to-run Kubernetes Pod manifest** that runs an **`fio` benchmark** directly on your **GCP `pd-ssd` PersistentVolumeClaim** (PVC).
@@ -167,4 +146,23 @@ kubectl delete pvc fio-test-pvc
 
 ---
 
-Would you like me to extend this manifest with **resource requests/limits** (CPU/memory) and **Jenkins-like labels** so you can drop it directly into your cluster (e.g. under the same namespace `cjoc1`)?
+
+# 504 Nginx error (or equivalent)
+
+Avoid 504
+
+NGINX Ingress (Kubernetes)
+
+Add annotations to your Ingress manifest:
+
+> kubectl edit ing <controller>
+
+```
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+
+```
