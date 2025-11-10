@@ -1,0 +1,6 @@
+#! /bin/bash
+
+source ../set-env.sh
+
+TOKEN="$JENKINS_USERNAME:$JENKINS_API_TOKEN"
+curl -u "$JENKINS_API_TOKEN" -X POST "$JENKINS_HOST/$JENKINS_JOB_PATH"

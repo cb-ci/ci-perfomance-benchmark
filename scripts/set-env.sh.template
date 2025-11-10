@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# This script sets the environment variables for the shell scripts
+# Please fill in the appropriate values before using.
+
+
+export JENKINS_API_TOKEN="jenkins_user:jenkins_api_token"
+export JENKINS_HOST="your_jenkins_host"
+export JENKINS_JOB_PATH="/job/test/build" # Update if your job path is different
+

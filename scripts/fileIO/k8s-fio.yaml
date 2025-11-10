@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fio-test-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: ssd-cloudbees-ci-cjoc1
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fio-benchmark
+spec:
+  restartPolicy: Never
+  containers:
+    - name: fio
+      #image:  ghcr.io/axboe/fio:latest
+      image:  haseebh/fio:alpine
+      command: ["sh", "-c"]
+      args:
+        - |
+          echo ">>> Running fio benchmark on mounted pd-ssd PVC"      
+          echo ">>> Starting FIO benchmark on $(hostname) at $(date)"
+          echo ">>> Using device: /mnt/testfile"
+          
+          TEST_FILE=/mnt/testfile
+      
+          # Test 1: 4k random read/write
+          echo ">>> Test 1: Random 4K mixed read/write"
+          fio --name=randrw4k \
+          --ioengine=libaio \
+          --rw=randrw \
+          --bs=4k \
+          --numjobs=8 \
+          --iodepth=16 \
+          --direct=1 \
+          --time_based \
+          --runtime=60 \
+          --size=2G \
+          --filename=$TEST_FILE \
+          --group_reporting
+      
+          # Test 2: Sequential 1M write (throughput test)
+          echo ">>> Test 2: Sequential 1M write"
+          fio --name=seqwrite1m \
+          --ioengine=libaio \
+          --rw=write \
+          --bs=1M \
+          --numjobs=4 \
+          --iodepth=4 \
+          --direct=1 \
+          --runtime=30 \
+          --size=2G \
+          --filename=$TEST_FILE \
+          --group_reporting
+      
+          # Test 3: Random read-only (read IOPS focus)
+          echo ">>> Test 3: Random 4K read"
+          fio --name=randread4k \
+          --ioengine=libaio \
+          --rw=randread \
+          --bs=4k \
+          --numjobs=8 \
+          --iodepth=16 \
+          --direct=1 \
+          --runtime=60 \
+          --size=2G \
+          --filename=$TEST_FILE \
+          --group_reporting
+      
+          echo ">>> All FIO tests complete at $(date)"
+
+
+          echo ">>> Done"
+      volumeMounts:
+        - name: test-volume
+          mountPath: /mnt
+  volumes:
+    - name: test-volume
+      persistentVolumeClaim:
+        claimName: fio-test-pvc
