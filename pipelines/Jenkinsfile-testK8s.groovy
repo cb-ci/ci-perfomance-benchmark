@@ -78,32 +78,45 @@ pipeline {
                 """
             }
         }
-        stage('Generate Final Report') {
-            steps {
-                script {
-                    def END_TIME_MS = System.currentTimeMillis()
-                    def TOTAL_DURATION = (END_TIME_MS - START_TIME_MS) / 1000.0
 
-                    // Set the final duration variable for the reporter script
-                    env.TOTAL_TIME_SECONDS = TOTAL_DURATION.toString()
-                    echo "Total elapsed time: ${TOTAL_DURATION} seconds"
+    }
+    post {
+        success {
+            sh """                
+                    # Record end time
+                    end_time=\$(date +%s)
+                    
+                    # Compute elapsed time in seconds
+                    elapsed=\$(( end_time - ${START_TIME_MS} ))
+                    
+                    # Optional: format elapsed time as H:M:S
+                    hours=\$(( elapsed / 3600 ))
+                    minutes=\$(( (elapsed % 3600) / 60 ))
+                    seconds=\$(( elapsed % 60 ))
+                    
+                    echo ">>> Script finished at: \$(date)"
+                    echo ">>> Total execution time: ${hours}h ${minutes}m ${seconds}s (${elapsed}s total)"
+                 """
+            script {
+                def END_TIME_MS = System.currentTimeMillis()
+                def TOTAL_DURATION = (END_TIME_MS - START_TIME_MS) / 1000.0
 
-                    env.IO_WRITE_SPEED = readFile('write_speed.txt').trim()
-                    env.IO_READ_SPEED = readFile('read_speed.txt').trim()
-                    env.CPU_RUNTIME = readFile('cpu_runtime.txt').trim()
-                    env.MEM_BANDWIDTH = readFile('mem_bandwidth.txt').trim()
-                }
+                // Set the final duration variable for the reporter script
+                env.TOTAL_TIME_SECONDS = TOTAL_DURATION.toString()
+                echo "Total elapsed time: ${TOTAL_DURATION} seconds"
 
-                // Execute the Bash reporter script to compile the results
-                sh "IO_WRITE_SPEED='${env.IO_WRITE_SPEED}' IO_READ_SPEED='${env.IO_READ_SPEED}' CPU_RUNTIME='${env.CPU_RUNTIME}' MEM_BANDWIDTH='${env.MEM_BANDWIDTH}' TOTAL_TIME_SECONDS='${env.TOTAL_TIME_SECONDS}' ${REPORT_SCRIPT} generate_report" // Referenced the renamed script
+                env.IO_WRITE_SPEED = readFile('write_speed.txt').trim()
+                env.IO_READ_SPEED = readFile('read_speed.txt').trim()
+                env.CPU_RUNTIME = readFile('cpu_runtime.txt').trim()
+                env.MEM_BANDWIDTH = readFile('mem_bandwidth.txt').trim()
             }
-        }
-        stage('Archive Report') {
-            steps {
-                // Archive the generated report so it's easily viewable on the build page
-                archiveArtifacts artifacts: REPORT_FILE, fingerprint: true
-                archiveArtifacts artifacts: "*.txt", fingerprint: true
-            }
+
+            // Execute the Bash reporter script to compile the results
+            sh "IO_WRITE_SPEED='${env.IO_WRITE_SPEED}' IO_READ_SPEED='${env.IO_READ_SPEED}' CPU_RUNTIME='${env.CPU_RUNTIME}' MEM_BANDWIDTH='${env.MEM_BANDWIDTH}' TOTAL_TIME_SECONDS='${env.TOTAL_TIME_SECONDS}' ${REPORT_SCRIPT} generate_report" // Referenced the renamed script
+            // Archive the generated report so it's easily viewable on the build page
+            archiveArtifacts artifacts: REPORT_FILE, fingerprint: true
+            archiveArtifacts artifacts: "*.txt", fingerprint: true
+
         }
     }
 }
