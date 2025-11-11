@@ -1,6 +1,6 @@
 // Set environment variables for the report file and build start time
 def REPORT_FILE = "benchmark_report.md"
-def REPORT_SCRIPT_DIR= "pipelines"
+def REPORT_SCRIPT= "pipelines/report.sh"
 def START_TIME_MS = 0
 
 pipeline {
@@ -40,7 +40,7 @@ pipeline {
                     echo "Starting benchmark run at: ${new Date(START_TIME_MS)}"
                 }
                 // Make the script executable
-                sh 'chmod +x reposrt.sh' // Referenced the renamed script
+                sh 'chmod -R +x *.sh' // Referenced the renamed script
             }
         }
 
@@ -81,7 +81,7 @@ pipeline {
                     echo "--- Running CPU Load Test (bc calculation) ---"
                     # Run the Bash script's CPU test function and capture the raw time output
                     # The script prints the time as the last line, making it easy to capture with backticks.
-                    CPU_TIME=\$(\${REPORT_SCRIPT_DIR}/report.sh cpu_test) // Referenced the renamed script
+                    CPU_TIME=\$(\${REPORT_SCRIPT_DIR} cpu_test) // Referenced the renamed script
                     
                     # Extract only the numeric part (which the script echoes) and ensure it's exported
                     CPU_TIME_CLEAN=\$(echo "\${CPU_TIME}" | tail -1)
@@ -104,7 +104,7 @@ pipeline {
                 }
                 
                 // Execute the Bash reporter script to compile the results
-                sh "${REPORT_SCRIPT_DIR}/report.sh generate_report" // Referenced the renamed script
+                sh "${REPORT_SCRIPT} generate_report" // Referenced the renamed script
             }
         }
 
