@@ -35,9 +35,9 @@ pipeline {
 
                     # Extract speed (requires the speed output from dd, typically the last line)
                     WRITE_SPEED=\$(cat write_output.txt | grep -Eo '[0-9.]+ [MGK]B/s' | tail -1)
-                    echo "Extracted Write Speed: ${WRITE_SPEED}"
+                    echo "Extracted Write Speed: \${WRITE_SPEED}"
 
-                    echo "${WRITE_SPEED}" > write_speed.txt
+                    echo "\${WRITE_SPEED}" > write_speed.txt
                 """
                 sh label: 'Sequential Read Test',script:  """
                     echo "--- Running Sequential Read Test (${FILE_SIZE} file) ---"
@@ -46,9 +46,9 @@ pipeline {
                     dd if=${TEST_FILE} of=/dev/null bs=1M iflag=direct status=progress 2>&1 | tee read_output.txt
 
                     READ_SPEED=\$(cat read_output.txt | grep -Eo '[0-9.]+ [MGK]B/s' | tail -1)
-                    echo "Extracted Read Speed: ${READ_SPEED}"
+                    echo "Extracted Read Speed: \${READ_SPEED}"
 
-                    echo "${READ_SPEED}" > read_speed.txt
+                    echo "\${READ_SPEED}" > read_speed.txt
 
                     # Clean up
                     rm -f ${TEST_FILE}
@@ -74,8 +74,8 @@ pipeline {
                     # Run the Bash script's memory test function and capture the output
                     MEM_SPEED=\$(${REPORT_SCRIPT} memory_test)
 
-                    echo "Captured Memory Bandwidth: ${MEM_SPEED}"
-                    echo "${MEM_SPEED}" > mem_bandwidth.txt
+                    echo "Captured Memory Bandwidth: \${MEM_SPEED}"
+                    echo "\${MEM_SPEED}" > mem_bandwidth.txt
                 """
             }
         }
