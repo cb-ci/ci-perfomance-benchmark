@@ -22,16 +22,14 @@ format_time() {
 
 # Function to run the CPU stress test and echo the runtime
 cpu_test() {
-    # We use a simple loop with 'bc' to perform intensive calculations,
-    # as recursive functions like Fibonacci are difficult and inefficient in pure Bash.
+    # We use 'openssl speed' to benchmark the CPU's performance with cryptographic functions.
+    # This provides a standardized and intensive workload.
 
-    echo "Starting CPU stress calculation (Iterations: $CPU_LOAD_ITERATIONS)..."
+    echo "Starting CPU stress test (openssl speed)..."
     local start_time=$(date +%s.%N)
 
-    for i in $(seq 1 $CPU_LOAD_ITERATIONS); do
-        # Perform a calculation using arbitrary precision math via bc
-        echo "scale=10; \sqrt($i) * (3.14159 / (1 + $i))" | bc -l > /dev/null
-    done
+    # Run a short but intensive benchmark on a common algorithm
+    openssl speed -elapsed -evp aes-256-cbc > /dev/null 2>&1
 
     local end_time=$(date +%s.%N)
     # Calculate duration
@@ -39,6 +37,17 @@ cpu_test() {
 
     echo "Extracted CPU Runtime: ${runtime}s"
     echo "$runtime" # Echo the raw runtime for Jenkins to capture
+}
+
+# Function to run a memory bandwidth test
+memory_test() {
+    echo "Starting Memory bandwidth test (dd)..."
+    # Use dd to move a 1GB block of data and measure the speed.
+    # This tests memory bandwidth by reading from a null source and writing to a null sink.
+    local mem_speed=$(dd if=/dev/zero of=/dev/null bs=1M count=1024 2>&1 | grep -o '[0-9.]* [a-zA-Z/]*s$')
+
+    echo "Extracted Memory Bandwidth: ${mem_speed}"
+    echo "${mem_speed}" # Echo the result for Jenkins to capture
 }
 
 # Function to generate the final Markdown report
@@ -60,18 +69,25 @@ generate_report() {
 
 | Metric | Result |
 | :--- | :--- |
-| Sequential Write Speed | **${IO_WRITE_SPEED}** |
-| Sequential Read Speed | **${IO_READ_SPEED}** |
+| Sequential Write Speed | **\${IO_WRITE_SPEED}** |
+| Sequential Read Speed | **\${IO_READ_SPEED}** |
 
 ## 2. CPU Stress Test
-*(Testing raw computation time via intensive 'bc' calculations)*
+*(Testing raw computation time via 'openssl speed')*
 
 | Metric | Result |
 | :--- | :--- |
-| CPU Load Runtime | **${CPU_RUNTIME}** seconds |
-| Load Intensity | $CPU_LOAD_ITERATIONS iterations (bc) |
+| CPU Load Runtime | **\${CPU_RUNTIME}** seconds |
+| Load Intensity | openssl speed -evp aes-256-cbc |
 
-## 3. Overall Controller Performance Summary
+## 3. Memory Bandwidth Test
+*(Testing memory throughput with 'dd')*
+
+| Metric | Result |
+| :--- | :--- |
+| Memory Bandwidth | **\${MEM_BANDWIDTH}** |
+
+## 4. Overall Controller Performance Summary
 The overall pipeline duration (which includes checkout, agent spin-up, and all steps) is the best indicator of overall controller responsiveness under load.
 
 **Total Execution Time:** **$TOTAL_TIME_FORMATTED**
@@ -84,10 +100,13 @@ EOF
 if [ "$1" == "cpu_test" ]; then
     # If run with 'cpu_test' argument, only run the test and output the time
     cpu_test
+elif [ "$1" == "memory_test" ]; then
+    # If run with 'memory_test' argument, only run the test and output the result
+    memory_test
 elif [ "$1" == "generate_report" ]; then
     # If run with 'generate_report', generate the final report
     generate_report
 else
-    echo "Usage: $0 {cpu_test|generate_report}"
+    echo "Usage: $0 {cpu_test|memory_test|generate_report}"
     exit 1
 fi
