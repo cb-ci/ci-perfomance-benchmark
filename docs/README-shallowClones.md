@@ -27,7 +27,7 @@ It keeps the *working tree* (your files) the same as normal; it just limits what
 
     * Git plugin / traits:
 
-      ```yaml
+      ```
       - cloneOption:
           extension:
             cloneOption:
@@ -39,7 +39,7 @@ It keeps the *working tree* (your files) the same as normal; it just limits what
     * For submodules, also set **submodule shallow** if possible.
 * **Build PR merges?** Make sure the depth includes the merge commit your job checks out. If you ever hit “requested commit not found,” deepen:
 
-  ```bash
+  ```
   git fetch --deepen=500 || git fetch --unshallow
   ```
 * **Versioning from tags?** If your pipeline uses `git describe`, GitVersion, release plugins, etc., you’ll likely need tags or full history. Either:
