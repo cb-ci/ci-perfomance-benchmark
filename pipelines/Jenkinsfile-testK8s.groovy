@@ -4,15 +4,6 @@ def REPORT_SCRIPT= "pipelines/report.sh"
 def START_TIME_MS = 0
 
 pipeline {
-    // Reference the Kubernetes YAML file for the agent configuration
-    /* agent {
-        kubernetes {
-            yamlFile 'pod.yaml' // Referenced the renamed file
-        }
-    }*/
-    /*
-    Here, we want explicit to execute the 'sh' step on the Controller
-     */
     agent {
         label "built-in"
     }
