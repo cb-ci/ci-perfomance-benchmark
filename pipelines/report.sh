@@ -83,7 +83,7 @@ EOF
 # --- Main Execution Logic ---
 if [ "$1" == "cpu_test" ]; then
     # If run with 'cpu_test' argument, only run the test and output the time
-    run_cpu_test
+    cpu_test
 elif [ "$1" == "generate_report" ]; then
     # If run with 'generate_report', generate the final report
     generate_report
