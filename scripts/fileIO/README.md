@@ -1,7 +1,4 @@
 
-
-*very* relevant for Jenkins performance engineering, especially when evaluating storage backends for `$JENKINS_HOME` (e.g., local SSD, EFS/NFS, or PD-SSD on GKE).
-
 Let’s break it down step-by-step — you’ll see why **random I/O** and **sequential I/O** matter differently for Jenkins controllers, agents, and caches 👇
 
 ---
