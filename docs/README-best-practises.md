@@ -142,11 +142,8 @@ Tips if you’re nearing the cap:
 
 * Use shallow clones when possible
 
-
- 
- 
-Sample run :
- 
+Full clone sample
+```
 Cloning into 'full_clone'...
 remote: Enumerating objects: 3345151, done.
 remote: Counting objects: 100% (3931/3931), done.
@@ -156,8 +153,9 @@ Receiving objects: 100% (3345151/3345151), 1.06 GiB | 10.20 MiB/s, done.
 Resolving deltas: 100% (2333278/2333278), done.
 Updating files: 100% (79285/79285), done.
  Full clone took 139 seconds and used 2.3G of disk space.
-
-
+```
+Shallow clone sample
+```
 Starting shallow clone...
 Cloning into 'shallow_clone'...
 remote: Enumerating objects: 82748, done.
@@ -168,7 +166,7 @@ Receiving objects: 100% (82748/82748), 353.61 MiB | 8.33 MiB/s, done.
 Resolving deltas: 100% (18138/18138), done.
 Updating files: 100% (79285/79285), done.
  Shallow clone took 67 seconds and used 1.5G of disk space.
-`
+```
 
 ---
 
