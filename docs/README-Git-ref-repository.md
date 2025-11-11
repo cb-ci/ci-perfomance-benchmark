@@ -9,7 +9,7 @@ A **Git reference repository** is essentially a **local cache of Git objects** (
 * Normally, when you run `git clone https://github.com/org/repo.git`, Git fetches all objects from the remote.
 * If you already have another clone of the same repo (or a repo with shared history), you can speed things up by pointing Git to it:
 
-```bash
+```
 git clone --reference /path/to/reference/repo https://github.com/org/repo.git new-clone
 ```
 
@@ -124,7 +124,7 @@ You can configure a **Git reference repository** for Jenkins using **JCasC (Conf
 
 If you want to define a global reference repo for all jobs:
 
-```yaml
+```
 unclassified:
   gitSCM:
     globalConfigName: "jenkins"
@@ -142,7 +142,7 @@ unclassified:
 
 If you want to configure reference repos for specific jobs or multibranch pipelines:
 
-```yaml
+```
 jobs:
   - script: >
       multibranchPipelineJob('example-mbp') {
@@ -175,7 +175,7 @@ Here:
 
 Usually you create it like this (bare repo is best):
 
-```bash
+```
 mkdir -p /var/jenkins_home/git-reference
 cd /var/jenkins_home/git-reference
 git clone --mirror https://github.com/org/repo.git
@@ -183,7 +183,7 @@ git clone --mirror https://github.com/org/repo.git
 
 And keep it updated (cron or Jenkins job):
 
-```bash
+```
 cd /var/jenkins_home/git-reference/repo.git
 git remote update --prune
 ```
@@ -249,7 +249,7 @@ Even with event-driven updates, a build might start **before** the mirror refres
 
 Use a trivial HTTP server that writes one file per repo into a **work queue directory**.
 
-```yaml
+```
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -288,7 +288,7 @@ Expose it behind your ingress and configure your Git server’s webhook to POST 
 
 This reads the queue directory, rate-limits, and updates mirrors for only those repos.
 
-```yaml
+```
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -354,7 +354,7 @@ data:
 
 To avoid keeping 50k entries in env, mount a **ConfigMap** (or file) keyed by repo name. Example env for a few top repos:
 
-```yaml
+```
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -370,7 +370,7 @@ data:
 
 Mount the shared PVC (`jenkins-home`) for both sidecars so they can update `/var/jenkins_home/git-reference`.
 
-```yaml
+```
 spec:
   volumes:
     - name: jenkins-home
@@ -425,7 +425,7 @@ Expose `refcache-webhook` via a Service/Ingress and point your Git server’s we
 * Do **not** disable network access: let Git fetch missing objects from origin if the mirror isn’t up to date yet.
 * Optionally, add a **pre-checkout step** in pipelines:
 
-```groovy
+```
   stage('Prepare') {
     steps {
       sh 'git -C "$WORKSPACE" fetch --no-tags origin +refs/heads/*:refs/remotes/origin/* --depth=1 || true'

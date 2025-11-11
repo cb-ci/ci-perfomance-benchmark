@@ -142,16 +142,10 @@ Tips if you’re nearing the cap:
 
 * Use shallow clones when possible
 
-Data shared
-`
-Shared by Max 10/21/25
 
-gitHub Slow findings attached.
- 
-Exploring the shallow cloning approach
  
  
-Sample run for Maya :
+Sample run :
  
 Cloning into 'full_clone'...
 remote: Enumerating objects: 3345151, done.
@@ -221,7 +215,7 @@ Updating files: 100% (79285/79285), done.
 
 ## Focused JCasC edits (only the parts to change)
 
-```yaml
+```
 items:
   - kind: organizationFolder
     name: mecs
@@ -305,7 +299,7 @@ items:
 
 ## Loggers
 
-```CasC
+```
 jenkins:
   logging:
     loggers:
@@ -323,7 +317,7 @@ jenkins:
         level: "FINEST"
       - name: "okhttp3.internal.http2"
         level: "FINEST"
-```
+````
 
 ---
 

@@ -133,7 +133,7 @@ Refs consolidated in **Quick Links → GitHub**.
 
 ## Focused JCasC Edits (diff-style)
 
-```yaml
+```
 items:
   - kind: organizationFolder
     name: <org-folder>
@@ -188,7 +188,7 @@ items:
 
 **Loggers (CasC):**
 
-```yaml
+```
 jenkins:
   logging:
     loggers:
@@ -210,7 +210,7 @@ jenkins:
 
 **Proxy tail (example):**
 
-```bash
+```
 kubectl -n squid exec -ti <squid-pod> -- \
   tail -f /var/log/squid/access.log | grep github
 ```
