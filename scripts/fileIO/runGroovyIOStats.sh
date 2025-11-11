@@ -6,8 +6,6 @@
 
 source ../set-env.sh
 
-JENKINS_HOST="${1:-$JENKINS_HOST}"
-JENKINS_API_TOKEN="${2:-$JENKINS_API_TOKEN}"
 GROOVY_SCRIPT_PATH="$(pwd)/filePerfIOMetrics.groovy"
 #GROOVY_SCRIPT_PATH="$(pwd)/testEnv.groovy"
 
