@@ -103,6 +103,7 @@ pipeline {
             steps {
                 // Archive the generated report so it's easily viewable on the build page
                 archiveArtifacts artifacts: REPORT_FILE, fingerprint: true
+                archiveArtifacts artifacts: "*.txt", fingerprint: true
             }
         }
     }
