@@ -45,7 +45,7 @@ pipeline {
 
         stage('File I/O Benchmark to JENKINS_HOME') {
             steps {
-                sh label: 'Sequential Write Test', """
+                sh label: 'Sequential Write Test', script: """
                     echo "--- Running Sequential Write Test (\${FILE_SIZE} file) ---"
                     # Write test using dd (writing to the mounted workspace volume)
                     # Use oflag=dsync ensures data is physically written, testing IOPS/throughput accurately.
@@ -57,7 +57,7 @@ pipeline {
                     
                     export IO_WRITE_SPEED="\${WRITE_SPEED}"
                 """
-                sh label: 'Sequential Read Test', """
+                sh label: 'Sequential Read Test',script:  """
                     echo "--- Running Sequential Read Test (\${FILE_SIZE} file) ---"
                     # Read test from the written file
                     # iflag=direct bypasses filesystem cache, testing raw disk speed.
@@ -76,7 +76,7 @@ pipeline {
 
         stage('CPU & Memory Load Simulation') {
             steps {
-                sh label: 'Run CPU Load Test', """
+                sh label: 'Run CPU Load Test',script:  """
                     echo "--- Running CPU Load Test (bc calculation) ---"
                     # Run the Bash script's CPU test function and capture the raw time output
                     # The script prints the time as the last line, making it easy to capture with backticks.
