@@ -1,6 +1,6 @@
 def REPORT_FILE = "benchmark_report.md"
 def REPORT_SCRIPT= "pipelines/report.sh"
-def START_TIME_MS = 0
+def START_TIME_MS = System.currentTimeMillis()
 pipeline {
     agent {
         label "built-in"
@@ -18,7 +18,6 @@ pipeline {
         stage('Initialize & Record Start Time') {
             steps {
                 script {
-                    START_TIME_MS = System.currentTimeMillis()
                     echo "Starting benchmark run at: ${new Date(START_TIME_MS)}"
                 }
                 // Make the script executable
