@@ -84,26 +84,10 @@ pipeline {
     }
     post {
         success {
-            sh """                
-                    # Record end time
-                    export end_time=\$(date +%s)
-                    
-                    # Compute elapsed time in seconds
-                    elapsed=\$(( end_time - ${START_TIME_MS} ))
-                    
-                    # Optional: format elapsed time as H:M:S
-                    hours=\$(( elapsed / 3600 ))
-                    minutes=\$(( (elapsed % 3600) / 60 ))
-                    seconds=\$(( elapsed % 60 ))
-                    
-                    echo ">>> Script finished at: \$(date)"
-                    echo ">>> Total execution time: \${hours}h \${minutes}m \${seconds}s (\${elapsed}s total)"
-                    
-                 """
             script {
-                //def END_TIME_MS = System.currentTimeMillis()
-                //def TOTAL_DURATION = (END_TIME_MS - START_TIME_MS) / 1000.0
-                def TOTAL_DURATION = ($end_time - START_TIME_MS) / 1000.0
+                def END_TIME_MS = System.currentTimeMillis()
+                //This calculation doesnt work very well because END_TIME_MS equals always to START_TIME_MS because of Groovy
+                def TOTAL_DURATION = (END_TIME_MS - START_TIME_MS) / 1000.0
 
                 // Set the final duration variable for the reporter script
                 env.TOTAL_TIME_SECONDS = TOTAL_DURATION.toString()
