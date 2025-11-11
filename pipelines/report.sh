@@ -55,7 +55,6 @@ generate_report() {
     # Read environment variables
     local TOTAL_TIME_FORMATTED=$(format_time "$TOTAL_TIME_SECONDS")
     local DATE_TIME=$(date '+%Y-%m-%d %H:%M:%S')
-    env | sort
     cat << EOF > "$REPORT_FILE"
 # Controller Performance Benchmark Report
 
@@ -64,20 +63,20 @@ generate_report() {
 
 ---
 
-## 1. File I/O Benchmark (\${FILE_SIZE} Sequential Test)
+## 1. File I/O Benchmark (${FILE_SIZE} Sequential Test)
 *(Testing read/write speed against the volume hosting the workspace)*
 
 | Metric | Result |
 | :--- | :--- |
-| Sequential Write Speed | **\${IO_WRITE_SPEED}** |
-| Sequential Read Speed | **\${IO_READ_SPEED}** |
+| Sequential Write Speed | **${IO_WRITE_SPEED}** |
+| Sequential Read Speed | **${IO_READ_SPEED}** |
 
 ## 2. CPU Stress Test
 *(Testing raw computation time via 'openssl speed')*
 
 | Metric | Result |
 | :--- | :--- |
-| CPU Load Runtime | **\${CPU_RUNTIME}** seconds |
+| CPU Load Runtime | **${CPU_RUNTIME}** seconds |
 | Load Intensity | openssl speed -evp aes-256-cbc |
 
 ## 3. Memory Bandwidth Test
@@ -85,7 +84,7 @@ generate_report() {
 
 | Metric | Result |
 | :--- | :--- |
-| Memory Bandwidth | **\${MEM_BANDWIDTH}** |
+| Memory Bandwidth | **${MEM_BANDWIDTH}** |
 
 ## 4. Overall Controller Performance Summary
 The overall pipeline duration (which includes checkout, agent spin-up, and all steps) is the best indicator of overall controller responsiveness under load.
