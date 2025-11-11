@@ -27,6 +27,7 @@ pipeline {
         IO_WRITE_SPEED = ''
         IO_READ_SPEED = ''
         CPU_RUNTIME = ''
+        MEM_BANDWIDTH = ''
         TOTAL_TIME_SECONDS = ''
         TEST_FILE = "${WORKSPACE}/io_test.benchmark"
         FILE_SIZE = '1G' // Test with 1 Gigabyte
@@ -88,6 +89,14 @@ pipeline {
                     
                     echo "Captured CPU Runtime: \${CPU_TIME_CLEAN}s"
                     export CPU_RUNTIME="\${CPU_TIME_CLEAN}"
+                """
+                sh label: 'Run Memory Bandwidth Test',script:  """
+                    echo "--- Running Memory Bandwidth Test (dd) ---"
+                    # Run the Bash script's memory test function and capture the output
+                    MEM_SPEED=\$(${REPORT_SCRIPT} memory_test)
+                    
+                    echo "Captured Memory Bandwidth: \${MEM_SPEED}"
+                    export MEM_BANDWIDTH="\${MEM_SPEED}"
                 """
             }
         }
