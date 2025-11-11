@@ -4,17 +4,17 @@ Use this as a field-ready checklist for configuring **Multibranch & Organization
 
 ## Table of Contents
 
-* [Quick Links](https://chatgpt.com/c/68ed0543-7b58-8333-9af9-e8615167279e#quick-links)
-* [GitHub Organizations – Key Limits & Guidance](https://chatgpt.com/c/68ed0543-7b58-8333-9af9-e8615167279e#github-organizations--key-limits--guidance)
-* [Multibranch Lifecycle Hygiene](https://chatgpt.com/c/68ed0543-7b58-8333-9af9-e8615167279e#multibranch-lifecycle-hygiene)
-* [Recommended Defaults (Most Teams)](https://chatgpt.com/c/68ed0543-7b58-8333-9af9-e8615167279e#recommended-defaults-most-teams)
-* [Settings to Consider (Case-by-Case)](https://chatgpt.com/c/68ed0543-7b58-8333-9af9-e8615167279e#settings-to-consider-case-by-case)
-* [Settings to Avoid (In Most Orgs)](https://chatgpt.com/c/68ed0543-7b58-8333-9af9-e8615167279e#settings-to-avoid-in-most-orgs)
-* [Git Hygiene & Performance](https://chatgpt.com/c/68ed0543-7b58-8333-9af9-e8615167279e#git-hygiene--performance)
-* [Focused JCasC Edits (diff-style)](https://chatgpt.com/c/68ed0543-7b58-8333-9af9-e8615167279e#focused-jcasc-edits-diff-style)
-* [Observability & Troubleshooting](https://chatgpt.com/c/68ed0543-7b58-8333-9af9-e8615167279e#observability--troubleshooting)
-* [Typical Issues to Watch](https://chatgpt.com/c/68ed0543-7b58-8333-9af9-e8615167279e#typical-issues-to-watch)
-* [TL;DR](https://chatgpt.com/c/68ed0543-7b58-8333-9af9-e8615167279e#tldr)
+* [Quick Links](#quick-links)
+* [GitHub Organizations – Key Limits & Guidance](#github-organizations--key-limits--guidance)
+* [Multibranch Lifecycle Hygiene](#multibranch-lifecycle-hygiene)
+* [Recommended Defaults (Most Teams)](#recommended-defaults-most-teams)
+* [Settings to Consider (Case-by-Case)](#settings-to-consider-case-by-case)
+* [Settings to Avoid (In Most Orgs)](#settings-to-avoid-in-most-orgs)
+* [Git Hygiene & Performance](#git-hygiene--performance)
+* [Focused JCasC Edits (diff-style)](#focused-jcasc-edits-diff-style)
+* [Observability & Troubleshooting](#observability--troubleshooting)
+* [Typical Issues to Watch](#typical-issues-to-watch)
+* [TL;DR](#tldr)
 
 ---
 
@@ -133,7 +133,7 @@ Refs consolidated in **Quick Links → GitHub**.
 
 ## Focused JCasC Edits (diff-style)
 
-```yaml
+`yaml
 items:
   - kind: organizationFolder
     name: <org-folder>
@@ -180,7 +180,7 @@ items:
           - suppressAutomaticTriggering:
               strategy: INDEXING        # suppress builds during indexing
               triggeredBranchesRegex: '.*'
-```
+`
 
 ---
 
@@ -188,7 +188,7 @@ items:
 
 **Loggers (CasC):**
 
-```yaml
+`yaml
 jenkins:
   logging:
     loggers:
@@ -206,14 +206,14 @@ jenkins:
         level: "FINEST"
       - name: "okhttp3.internal.http2"
         level: "FINEST"
-```
+`
 
 **Proxy tail (example):**
 
-```bash
+`bash
 kubectl -n squid exec -ti <squid-pod> -- \
   tail -f /var/log/squid/access.log | grep github
-```
+`
 
 **What you’ll see:** REST/GraphQL calls, pagination, rate-limit, retries, and trait decisions; proxy shows timings and response codes for correlation.
 

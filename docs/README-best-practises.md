@@ -1,7 +1,8 @@
-Setup for **GitHub Branch Source** in Multibranch & Organization projects—plus what to avoid.
+# GitHub Branch Source Best Practices
 
+This document outlines the recommended setup for **GitHub Branch Source** in Multibranch and Organization projects, along with common pitfalls to avoid.
 
-# Links 
+## Links 
 
 * https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/cloudbees-build-strategies-plugin
 * https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/github-app-auth
@@ -14,20 +15,17 @@ Setup for **GitHub Branch Source** in Multibranch & Organization projects—plus
 * https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/github-app-auth
 * https://github.com/jenkinsci/github-branch-source-plugin/blob/master/docs/github-app.adoc#enhancing-security-using-repository-access-strategies-and-default-permissions-strategies
 
+---
 
-
-
-# GitHub Organsiations
+## GitHub Organizations
 
 See https://github.com/jenkinsci/github-branch-source-plugin/blob/master/docs/github-app.adoc#enhancing-security-using-repository-access-strategies-and-default-permissions-strategies
 
-## Teams
+### Teams
 
 https://docs.github.com/en/organizations/organizing-members-into-teams/about-teams
 
-
-
-## Number of GitHub Apps per Organisation
+### Number of GitHub Apps per Organization
 
 * You can **register up to 100 GitHub Apps** owned by a single organization. ([GitHub Docs][1])
 * There’s **no limit on how many GitHub Apps you can install** on an organization (installations are unlimited). ([GitHub Docs][2])
@@ -38,7 +36,7 @@ See
 [1]: https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app "Registering a GitHub App"
 [2]: https://docs.github.com/en/apps/using-github-apps/installing-a-github-app-from-github-marketplace-for-your-organizations "Installing a GitHub App from GitHub Marketplace for your ..."
 
-## Number of repositories, teams and users
+### Number of repositories, teams and users
 
 There are usage limits for the team synchronization feature. Exceeding these limits will lead to a degradation in performance and may cause synchronization failures.
 * Maximum number of members in a GitHub team: 5,000
@@ -59,40 +57,41 @@ Tips if you’re nearing the cap:
 [1]: https://docs.github.com/enterprise-cloud%40latest/organizations/managing-saml-single-sign-on-for-your-organization/managing-team-synchronization-for-your-organization "Managing team synchronization for your organization"
 [2]: https://docs.github.com/organizations/organizing-members-into-teams/about-teams "About organization teams"
 
+---
 
-# MB Lifecycle
+## Multibranch Lifecycle
 
-* Scan intervall
-    * filters
-* Indexing
+* **Scan interval:** Configure appropriate scan intervals and filters.
+* **Indexing:**
     * https://www.cloudbees.com/blog/weathering-build-storms-in-the-enterprise
     * https://docs.cloudbees.com/docs/release-notes/latest/plugins/cloudbees-build-strategies-plugin/
-* PR
-* clone
-    * avoid sub-modules
-    * avoid custom clones
-    * git-ref-repo https://docs.cloudbees.com/docs/cloudbees-ci-kb/latest/client-and-managed-controllers/how-to-create-and-use-a-git-reference-repository
+* **PR:** Define a clear PR strategy.
+* **Clone:**
+    * Avoid sub-modules.
+    * Avoid custom clones.
+    * Use a git-ref-repo: https://docs.cloudbees.com/docs/cloudbees-ci-kb/latest/client-and-managed-controllers/how-to-create-and-use-a-git-reference-repository
 
+---
 
-# MultiBranchsource Recommended defaults (most teams)
+## MultiBranch Source Recommended defaults (most teams)
 
-**Branch discovery**
+### Branch discovery
 
 * **Strategy:** *Exclude branches that are also filed as PRs.*
   Prevents duplicate builds when the same changes appear in both a branch job and the PR job. ([docs.cloudbees.com][1])
 
-**PRs from the origin repo**
+### PRs from the origin repo
 
 * **Strategy:** *Build the PR **merge** with the target branch.*
   Catches integration conflicts early; this is the usual CI signal you want. ([docs.cloudbees.com][1])
 
-**PRs from forks**
+### PRs from forks
 
 * **Strategy:** *Build the PR **merge*** **and**
 * **Trust policy:** *Only trust users with **write/admin** permission* (`TrustPermission`).
   This runs the Pipeline with the PR’s proposed code **only** when the author is a trusted collaborator; otherwise Jenkins uses the trusted Jenkinsfile from the target branch (safer). ([docs.cloudbees.com][1])
 
-**Initial indexing / “build storm” protection**
+### Initial indexing / “build storm” protection
 
 * Enable **Initial Index Build Prevention** (CloudBees Build Strategies). It creates jobs but **does not** build everything during first scan; builds start on the next change. Huge win for large orgs. ([docs.cloudbees.com][2])
 * Use the [CloudBees-build-strategies-plugin](https://docs.cloudbees.com/docs/release-notes/latest/plugins/cloudbees-build-strategies-plugin/)
@@ -100,50 +99,51 @@ Tips if you’re nearing the cap:
     * https://www.cloudbees.com/blog/weathering-build-storms-in-the-enterprise
     * https://docs.cloudbees.com/docs/release-notes/latest/plugins/cloudbees-build-strategies-plugin/
 
-
-**Webhooks & scans**
+### Webhooks & scans
 
 * Use **GitHub webhooks** for fast PR/branch events; keep **periodic scans** low (e.g., daily) to discover new repos/branches. ([docs.cloudbees.com][3])
 * Avoid SCM Pooling, use webhooks
 * https://github.com/cb-ci/ci-groovy/blob/main/printAllSCMPollings.groovy
 
-**GitHub API health**
+### GitHub API health
 
 * In **Manage Jenkins → System → GitHub**, set **Normalize API requests** (or “Throttle at/near rate limit”) to avoid rate-limit stalls when you have many multibranch jobs. ([docs.cloudbees.com][3])
 * Setup guide and advanced permissions
     * https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/github-app-auth
     * https://github.com/jenkinsci/github-branch-source-plugin/blob/master/docs/github-app.adoc#enhancing-security-using-repository-access-strategies-and-default-permissions-strategies
 
-# Settings to consider (case-by-case)
+---
+
+## Settings to consider (case-by-case)
 
 * **Build PR “merge + head” (both strategies):** use when you need *two* signals (e.g., static analysis on PR head + integration test on merge). Expect ~2× build cost. Default to **merge only** otherwise. ([docs.cloudbees.com][1])
 * **Filter by name/regex:** include only `main`, `release/*`, and meaningful `feature/*` to reduce noise and API traffic. ([docs.cloudbees.com][3])
 * **Tags:** avoid auto-discovering/building **all tags**; if needed, add an explicit tag filter or a release job. (General multibranch guidance.) ([docs.cloudbees.com][3])
 * **Submodules** Avoid submodules when possible **all tags**; if needed, add an explicit tag filter or a release job. (General multibranch guidance.) ([docs.cloudbees.com][3])
 
-## GitHub Checks API
+### GitHub Checks API
 
 * SCM Reporting Plugin
 * Checks API step
 
-# Settings to avoid (in most orgs)
+---
+
+## Settings to avoid (in most orgs)
 
 * **Branch discovery = “All branches”** **and** **PR discovery (merge/head)** together → doubles builds for the same changes. Prefer *Exclude branches that are also filed as PRs*. ([docs.cloudbees.com][1])
 * **Fork PR trust = “Everyone”** → lets arbitrary contributors run unreviewed Jenkinsfiles with your credentials. Use **TrustPermission** (write/admin) and let untrusted forks use the target branch’s Jenkinsfile. ([docs.cloudbees.com][1])
 * **Building everything on first indexing** in large orgs → classic “build storm”. Use the **Initial Index Build Prevention** strategy. ([docs.cloudbees.com][2])
 
-
-## Submodules
+### Submodules
 
 * Avoid submodules when possible
 
-## Shallow clones
+### Shallow clones
 
 * Use shallow clones when possible
 
 Data shared
-
-```
+`
 Shared by Max 10/21/25
 
 gitHub Slow findings attached.
@@ -174,25 +174,26 @@ Receiving objects: 100% (82748/82748), 353.61 MiB | 8.33 MiB/s, done.
 Resolving deltas: 100% (18138/18138), done.
 Updating files: 100% (79285/79285), done.
  Shallow clone took 67 seconds and used 1.5G of disk space.
+`
 
-```
+---
 
-
-
-
-# Why these choices work
+## Why these choices work
 
 * They give you **one integration-grade signal per PR** (merge build) without duplicate branch builds.
 * They **contain risk** from untrusted forks while keeping a smooth contributor experience.
 * They **protect controllers** during first adoption and keep **GitHub API** usage predictable. ([docs.cloudbees.com][3])
 
+---
 
-# What’s good already
+## What’s good already
 
 * **Branch discovery = `strategyId: 1`** (exclude branches that also have PRs) → avoids duplicate builds. ([Stack Overflow][1])
 * **Weekly folder scan** and **orphan pruning** → gentler on the API & disk.
 
-# Tighten the PR/branch strategies
+---
+
+## Tighten the PR/branch strategies
 
 1. **Build PRs as the *merge* with target**
    Your PR discovery is `strategyId: 2` (PR **head**). Switch to **1** (PR **merge**) so you test what would actually land on `main`. Optionally use **3** to build both if you need two signals. ([CloudBees Docs][2])
@@ -207,7 +208,9 @@ Updating files: 100% (79285/79285), done.
 6. **Suppress automatic SCM triggering: move it to the branch property**
    The folder-level `suppressFolderAutomaticTriggering` often doesn’t affect multibranch children. Use **`strategy → allBranchesSame → props → suppressAutomaticTriggering`** instead. ([Stack Overflow][7])
 
-# Git hygiene & performance
+---
+
+## Git hygiene & performance
 
 * Don’t use **both** `wipeWorkspaceTrait` **and** `cleanBeforeCheckout`; pick one (usually `cleanBeforeCheckout`).
 * Consider **shallow clones** (`shallow: true`, `depth: 50`) unless your build needs deep history, submodule exact SHAs, or `git describe`.
@@ -216,9 +219,9 @@ Updating files: 100% (79285/79285), done.
 
 ---
 
-# Focused JCasC edits (only the parts to change)
+## Focused JCasC edits (only the parts to change)
 
-```yaml
+`yaml
 items:
   - kind: organizationFolder
     name: mecs
@@ -286,26 +289,23 @@ items:
     # Remove duplicate/ineffective folder-level suppressors:
     # properties:
     #   - suppressFolderAutomaticTriggering: { ... }   # delete both occurrences
-```
+`
 
 ---
 
+## Additional Resources
 
-### GitHub reference repositories
-
-See https://docs.cloudbees.com/docs/cloudbees-ci-kb/latest/client-and-managed-controllers/how-to-create-and-use-a-git-reference-repository
-
-# Additional
-
-* custom git steps
+* Custom git steps
 * MB Build strategy extensions
 * https://docs.cloudbees.com/plugins/ci/basic-branch-build-strategies
 * https://plugins.jenkins.io/basic-branch-build-strategies/
 * https://docs.cloudbees.com/plugins/ci/multibranch-build-strategy-extension
 
-# Loggers
+---
 
-``` CasC
+## Loggers
+
+`CasC
 jenkins:
   logging:
     loggers:
@@ -323,23 +323,28 @@ jenkins:
         level: "FINEST"
       - name: "okhttp3.internal.http2"
         level: "FINEST"
-```
+`
 
-# Proxy logs
+---
 
-```
+## Proxy logs
+
+`
 kubectl exec -ti squid-dev-proxy-5bf5f6fff4-kx42l -n squid   -- tail -f /var/log/squid/access.log |grep github
-```
+`
 
-# What you’ll see
+---
+
+## What you’ll see
 
 From loggers: repository/PR/branch discovery queries, GraphQL/REST endpoints hit, pagination, rate-limit remaining, backoffs/retries, and decisions about what jobs to create/update. (These come from github-branch-source, SCM API, and the GitHub API client.)
 docs.cloudbees.com
 
 From proxy: every request line & response code, with timestamps, and (if enabled) headers. This is perfect for correlating with GitHub’s own audit/rate-limit data.
 
-# Typically Issues
+---
 
+## Typical Issues
 
 * Potential Usage of Submodule References
 * Aggressive scan intervals have been seen
@@ -351,6 +356,7 @@ From proxy: every request line & response code, with timestamps, and (if enabled
 * approaches and design are founded allready
 * Avoid custom git steps (or make them effcient)
 
+---
 
 ## TL;DR
 
