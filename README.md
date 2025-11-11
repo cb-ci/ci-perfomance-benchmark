@@ -248,12 +248,13 @@ done
 
 ### Simple Pipeline End-to-End duration
 
+Options
 
-Simple Pipeline End-to-End duration time can be retrieved by 
-
-* The UI `open $BUILD_URL` 
-* or by the build_url api json endpoint:  `curl -u $TOKEN "${BUILD_URL}/api/json" | jq`
-
+* A:Setup Open telemtry plugin and anayse/compare the traces
+* B: Use the Pipeline Explorer or Console log
+* C: Use the UI build summary page
+* D: Simple Pipeline End-to-End duration time can also be retrieved by the build_url api json endpoint: 
+`curl -u $TOKEN "${BUILD_URL}/api/json" | jq`
 result example:
 ```
 {
