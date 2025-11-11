@@ -7,8 +7,8 @@ set -e
 # --- Default Configuration ---
 REPO_DIR="${1:-..}"     # Path to your local Git repo
 BRANCH="${2:-main}"    # Target branch
-COUNT="${3:-1}"        # Number of pushes (default: 1)
-DELAY="${4:-3}"        # Delay (seconds) between pushes
+COUNT="${3:-5}"        # Number of pushes (default: 1)
+DELAY="${4:-5}"        # Delay (seconds) between pushes
 
 FILE="testtrigger"     # File to modify for triggering
 
