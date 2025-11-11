@@ -7,6 +7,25 @@ pipeline {
     agent {
         label "built-in"
     }
+    /** For Pod agents, use this
+    agent {
+        kubernetes {
+            yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                    - name: benchmark-tool
+                      #image: python:3.10-slim-bullseye # A common image that includes Python, shell, and 'bc' utility for the bash script
+                      image: busybox
+                      command:
+                        - sleep
+                      args:
+                        - infinity # Keeps the agent container alive and ready
+                '''
+        }
+    } */
+
     options {
         // Capture the start time precisely for overall duration calculation
         timeout(time: 60, unit: 'MINUTES')
