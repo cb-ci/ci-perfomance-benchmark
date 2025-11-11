@@ -55,7 +55,7 @@ generate_report() {
     # Read environment variables
     local TOTAL_TIME_FORMATTED=$(format_time "$TOTAL_TIME_SECONDS")
     local DATE_TIME=$(date '+%Y-%m-%d %H:%M:%S')
-
+    env | sort
     cat << EOF > "$REPORT_FILE"
 # Controller Performance Benchmark Report
 
