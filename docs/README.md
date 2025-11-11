@@ -133,7 +133,7 @@ Refs consolidated in **Quick Links → GitHub**.
 
 ## Focused JCasC Edits (diff-style)
 
-`yaml
+```yaml
 items:
   - kind: organizationFolder
     name: <org-folder>
@@ -180,7 +180,7 @@ items:
           - suppressAutomaticTriggering:
               strategy: INDEXING        # suppress builds during indexing
               triggeredBranchesRegex: '.*'
-`
+```
 
 ---
 
@@ -188,7 +188,7 @@ items:
 
 **Loggers (CasC):**
 
-`yaml
+```yaml
 jenkins:
   logging:
     loggers:
@@ -206,14 +206,14 @@ jenkins:
         level: "FINEST"
       - name: "okhttp3.internal.http2"
         level: "FINEST"
-`
+```
 
 **Proxy tail (example):**
 
-`bash
+```bash
 kubectl -n squid exec -ti <squid-pod> -- \
   tail -f /var/log/squid/access.log | grep github
-`
+```
 
 **What you’ll see:** REST/GraphQL calls, pagination, rate-limit, retries, and trait decisions; proxy shows timings and response codes for correlation.
 

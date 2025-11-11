@@ -221,7 +221,7 @@ Updating files: 100% (79285/79285), done.
 
 ## Focused JCasC edits (only the parts to change)
 
-`yaml
+```yaml
 items:
   - kind: organizationFolder
     name: mecs
@@ -289,7 +289,7 @@ items:
     # Remove duplicate/ineffective folder-level suppressors:
     # properties:
     #   - suppressFolderAutomaticTriggering: { ... }   # delete both occurrences
-`
+```
 
 ---
 
@@ -305,7 +305,7 @@ items:
 
 ## Loggers
 
-`CasC
+```CasC
 jenkins:
   logging:
     loggers:
@@ -323,7 +323,7 @@ jenkins:
         level: "FINEST"
       - name: "okhttp3.internal.http2"
         level: "FINEST"
-`
+```
 
 ---
 

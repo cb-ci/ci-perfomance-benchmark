@@ -9,9 +9,9 @@ A **Git reference repository** is essentially a **local cache of Git objects** (
 * Normally, when you run `git clone https://github.com/org/repo.git`, Git fetches all objects from the remote.
 * If you already have another clone of the same repo (or a repo with shared history), you can speed things up by pointing Git to it:
 
-`bash
+```bash
 git clone --reference /path/to/reference/repo https://github.com/org/repo.git new-clone
-`
+```
 
 * Git will first try to copy objects from the **reference repo** (fast, local disk).
 * Only objects that are missing are fetched from the remote.
@@ -124,7 +124,7 @@ You can configure a **Git reference repository** for Jenkins using **JCasC (Conf
 
 If you want to define a global reference repo for all jobs:
 
-`yaml
+```yaml
 unclassified:
   gitSCM:
     globalConfigName: "jenkins"
@@ -132,7 +132,7 @@ unclassified:
     useExistingAccount: false
     createAccountBasedOnEmail: false
     referenceRepo: "/var/jenkins_home/git-reference"
-`
+```
 
 ⚠️ `referenceRepo` here points to a local path on the Jenkins controller or on a mounted volume. Jenkins will use it when cloning repositories.
 
@@ -142,7 +142,7 @@ unclassified:
 
 If you want to configure reference repos for specific jobs or multibranch pipelines:
 
-`yaml
+```yaml
 jobs:
   - script: >
       multibranchPipelineJob('example-mbp') {
@@ -162,7 +162,7 @@ jobs:
           }
         }
       }
-`
+```
 
 Here:
 
@@ -175,18 +175,18 @@ Here:
 
 Usually you create it like this (bare repo is best):
 
-`bash
+```bash
 mkdir -p /var/jenkins_home/git-reference
 cd /var/jenkins_home/git-reference
 git clone --mirror https://github.com/org/repo.git
-`
+```
 
 And keep it updated (cron or Jenkins job):
 
-`bash
+```bash
 cd /var/jenkins_home/git-reference/repo.git
 git remote update --prune
-`
+```
 
 ---
 
@@ -249,7 +249,7 @@ Even with event-driven updates, a build might start **before** the mirror refres
 
 Use a trivial HTTP server that writes one file per repo into a **work queue directory**.
 
-`yaml
+```yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -280,7 +280,7 @@ data:
     if __name__ == "__main__":
         os.makedirs(QUEUE, exist_ok=True)
         HTTPServer(("0.0.0.0", 8080), H).serve_forever()
-`
+```
 
 Expose it behind your ingress and configure your Git server’s webhook to POST to `/`.
 
@@ -288,7 +288,7 @@ Expose it behind your ingress and configure your Git server’s webhook to POST 
 
 This reads the queue directory, rate-limits, and updates mirrors for only those repos.
 
-`yaml
+```yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -348,13 +348,13 @@ data:
       done
       sleep 2
     done
-`
+```
 
 ### C) Environment mapping (repo → URL)
 
 To avoid keeping 50k entries in env, mount a **ConfigMap** (or file) keyed by repo name. Example env for a few top repos:
 
-`yaml
+```yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -362,15 +362,15 @@ metadata:
 data:
   env: |
     # map org/repo → remote
-    export URL__org__repo=https://github.com/org/repo.git
-    export URL__org2__bigrepo=git@github.com:org2/bigrepo.git
-`
+    export URL_org_repo=https://github.com/org/repo.git
+    export URL_org2_bigrepo=git@github.com:org2/bigrepo.git
+```
 
 ### D) Pod spec snippets (controller pod)
 
 Mount the shared PVC (`jenkins-home`) for both sidecars so they can update `/var/jenkins_home/git-reference`.
 
-`yaml
+```yaml
 spec:
   volumes:
     - name: jenkins-home
@@ -413,7 +413,7 @@ spec:
         - { name: refcache-urls,  mountPath: /env }
 
     # (Your jenkins controller container is also here, mounting jenkins-home)
-`
+```
 
 Expose `refcache-webhook` via a Service/Ingress and point your Git server’s webhook at it.
 
@@ -425,13 +425,13 @@ Expose `refcache-webhook` via a Service/Ingress and point your Git server’s we
 * Do **not** disable network access: let Git fetch missing objects from origin if the mirror isn’t up to date yet.
 * Optionally, add a **pre-checkout step** in pipelines:
 
-  `groovy
+```groovy
   stage('Prepare') {
     steps {
       sh 'git -C "$WORKSPACE" fetch --no-tags origin +refs/heads/*:refs/remotes/origin/* --depth=1 || true'
     }
   }
-  `
+```
 
   (Generally not required; the standard checkout step will fetch what’s missing.)
 
