@@ -1,6 +1,6 @@
 # GitHub Branch Source: Recommended Setup & Pitfalls (CloudBees CI)
 
-Use this as a field-ready checklist for configuring **Multibranch & Organization** projects with **GitHub Branch Source** (CloudBees CI/Jenkins).
+This document outlines the recommended setup for **GitHub Branch Source** in Multibranch and Organization projects, along with common pitfalls to avoid.
 
 ## Table of Contents
 
@@ -49,6 +49,7 @@ Use this as a field-ready checklist for configuring **Multibranch & Organization
 
 * API root – [api.github.com](https://api.github.com/)
 * Org admin strategies – [resources.github.com](https://resources.github.com/learn/pathways/administration-governance/essentials/strategies-for-using-organizations-github-enterprise-cloud/)
+* Org startegies - See https://github.com/jenkinsci/github-branch-source-plugin/blob/master/docs/github-app.adoc#enhancing-security-using-repository-access-strategies-and-default-permissions-strategies
 * Registering a GitHub App – [docs.github.com](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app)
 * Installing a GitHub App (Marketplace/org) – [docs.github.com](https://docs.github.com/en/apps/using-github-apps/installing-a-github-app-from-github-marketplace-for-your-organizations)
 * SAML / team sync – [docs.github.com](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-saml-single-sign-on-for-your-organization/managing-team-synchronization-for-your-organization)
@@ -62,6 +63,19 @@ Use this as a field-ready checklist for configuring **Multibranch & Organization
 * DSL discovery modes (Stack Overflow) – [stackoverflow.com](https://stackoverflow.com/questions/67871598/how-to-set-the-discovery-modes-for-multibranch-job-created-by-job-dsl)
 * Suppress folder auto-triggering nuance (Stack Overflow) – [stackoverflow.com](https://stackoverflow.com/questions/77314303/dsl-script-suppressfolderautomatictriggering-property-isnt-working)
 
+
+
+* https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/cloudbees-build-strategies-plugin
+* https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/github-app-auth
+* https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/github-branch-source-plugin#_using_build_triggers_and_webhooks
+* https://github.com/jenkinsci/github-branch-source-plugin
+* https://github.com/jenkinsci/github-branch-source-plugin/blob/master/docs/github-app.adoc#enhancing-security-using-repository-access-strategies-and-default-permissions-strategies
+* https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-saml-single-sign-on-for-your-organization/managing-team-synchronization-for-your-organization
+* https://resources.github.com/learn/pathways/administration-governance/essentials/strategies-for-using-organizations-github-enterprise-cloud/
+* https://docs.github.com/en/repositories/creating-and-managing-repositories/repository-limits
+* https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/github-app-auth
+* https://github.com/jenkinsci/github-branch-source-plugin/blob/master/docs/github-app.adoc#enhancing-security-using-repository-access-strategies-and-default-permissions-strategies
+
 ---
 
 ## GitHub Organizations – Key Limits & Guidance
@@ -70,7 +84,25 @@ Use this as a field-ready checklist for configuring **Multibranch & Organization
 * **GitHub Apps:** up to **100 apps registered** per org; **installations are unlimited**. *(See: [Registering a GitHub App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app), [Installing a GitHub App](https://docs.github.com/en/apps/using-github-apps/installing-a-github-app-from-github-marketplace-for-your-organizations)).*
 * **Team sync:** large syncs degrade performance—sync only essential IdP groups. *(See: [SAML / team sync](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-saml-single-sign-on-for-your-organization/managing-team-synchronization-for-your-organization)).*
 
+There are usage limits for the team synchronization feature. Exceeding these limits will lead to a degradation in performance and may cause synchronization failures.
+* Maximum number of members in a GitHub team: 5,000
+* Maximum number of members in a GitHub organization: 10,000
+* Maximum number of teams in a GitHub organization: 1,500
+* See https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-saml-single-sign-on-for-your-organization/managing-team-synchronization-for-your-organization#usage-limits
+
+
+**1,500 teams per organization.**
+GitHub’s docs note a cap of **1,500 teams** in a single org (mentioned in their team-sync limits, but it applies to orgs generally). ([GitHub Docs][1])
+
+Tips if you’re nearing the cap:
+
+* Avoid creating per-repo “admin/write” teams; reuse broader teams and grant repo access via team permissions.
+* Use **nested teams** to model hierarchy instead of many flat teams. ([GitHub Docs][2])
+* If you sync from Entra ID/Okta, select only essential groups—synced teams still count toward the 1,500. ([GitHub Docs][1])
+
+
 Refs consolidated in **Quick Links → GitHub**.
+
 
 ---
 
@@ -129,9 +161,51 @@ Refs consolidated in **Quick Links → GitHub**.
 * Prefer **shallow clones** when possible; keep **LFS** only where needed. *(See: [Multibranch template syntax](https://docs.cloudbees.com/docs/cloudbees-ci/latest/multibranch-pipeline-template-syntax-guide/examples), [Git reference repository (KB)](https://docs.cloudbees.com/docs/cloudbees-ci-kb/latest/client-and-managed-controllers/how-to-create-and-use-a-git-reference-repository)).*
 * Use regex/wildcard filters to limit job creation. *(See: [Multibranch template syntax](https://docs.cloudbees.com/docs/cloudbees-ci/latest/multibranch-pipeline-template-syntax-guide/examples)).*
 
+### GitHub Checks API
+
+* SCM Reporting Plugin
+* Checks API step
 ---
 
-## Focused JCasC Edits (diff-style)
+### Shallow clones
+
+* Use shallow clones when possible
+
+Full clone sample
+```
+Cloning into 'full_clone'...
+remote: Enumerating objects: 3345151, done.
+remote: Counting objects: 100% (3931/3931), done.
+remote: Compressing objects: 100% (1119/1119), done.
+remote: Total 3345151 (delta 3210), reused 3411 (delta 2798), pack-reused 3341220
+Receiving objects: 100% (3345151/3345151), 1.06 GiB | 10.20 MiB/s, done.
+Resolving deltas: 100% (2333278/2333278), done.
+Updating files: 100% (79285/79285), done.
+ Full clone took 139 seconds and used 2.3G of disk space.
+```
+Shallow clone sample
+```
+Starting shallow clone...
+Cloning into 'shallow_clone'...
+remote: Enumerating objects: 82748, done.
+remote: Counting objects: 100% (82748/82748), done.
+remote: Compressing objects: 100% (69641/69641), done.
+remote: Total 82748 (delta 18138), reused 43648 (delta 12482), pack-reused 0
+Receiving objects: 100% (82748/82748), 353.61 MiB | 8.33 MiB/s, done.
+Resolving deltas: 100% (18138/18138), done.
+Updating files: 100% (79285/79285), done.
+ Shallow clone took 67 seconds and used 1.5G of disk space.
+```
+## Git hygiene & performance
+
+* Don’t use **both** `wipeWorkspaceTrait` **and** `cleanBeforeCheckout`; pick one (usually `cleanBeforeCheckout`).
+* Consider **shallow clones** (`shallow: true`, `depth: 50`) unless your build needs deep history, submodule exact SHAs, or `git describe`.
+* Keep **LFS** only where repos actually use LFS (it slows fetches).
+* Your **regex filter** is fine; for maintainability you can switch to “wildcards include/exclude” if the patterns allow. Note regex applies to *all heads* including PRs. ([CloudBees Docs][8])
+
+---
+
+# Focused JCasC Edits (diff-style)
 
 ```
 items:
@@ -178,7 +252,7 @@ items:
       allBranchesSame:
         props:
           - suppressAutomaticTriggering:
-              strategy: INDEXING        # suppress builds during indexing
+              strategy: INDEXING        # suppress builds on indexing
               triggeredBranchesRegex: '.*'
 ```
 
@@ -227,6 +301,7 @@ kubectl -n squid exec -ti <squid-pod> -- \
 * Orphan branches/repos left behind—**prune** regularly.
 * Shared library caching/shallow clone not enabled.
 * Custom git steps that bypass traits (inefficient).
+* Caches are not enabled
 
 ---
 
