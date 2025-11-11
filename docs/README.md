@@ -63,19 +63,6 @@ This document outlines the recommended setup for **GitHub Branch Source** in Mul
 * DSL discovery modes (Stack Overflow) – [stackoverflow.com](https://stackoverflow.com/questions/67871598/how-to-set-the-discovery-modes-for-multibranch-job-created-by-job-dsl)
 * Suppress folder auto-triggering nuance (Stack Overflow) – [stackoverflow.com](https://stackoverflow.com/questions/77314303/dsl-script-suppressfolderautomatictriggering-property-isnt-working)
 
-
-
-* https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/cloudbees-build-strategies-plugin
-* https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/github-app-auth
-* https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/github-branch-source-plugin#_using_build_triggers_and_webhooks
-* https://github.com/jenkinsci/github-branch-source-plugin
-* https://github.com/jenkinsci/github-branch-source-plugin/blob/master/docs/github-app.adoc#enhancing-security-using-repository-access-strategies-and-default-permissions-strategies
-* https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-saml-single-sign-on-for-your-organization/managing-team-synchronization-for-your-organization
-* https://resources.github.com/learn/pathways/administration-governance/essentials/strategies-for-using-organizations-github-enterprise-cloud/
-* https://docs.github.com/en/repositories/creating-and-managing-repositories/repository-limits
-* https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/github-app-auth
-* https://github.com/jenkinsci/github-branch-source-plugin/blob/master/docs/github-app.adoc#enhancing-security-using-repository-access-strategies-and-default-permissions-strategies
-
 ---
 
 ## GitHub Organizations – Key Limits & Guidance
