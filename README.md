@@ -192,15 +192,21 @@ To isolate the performance impact of specific jobs:
 
 ### Managing Repos, Branches and PRs
 
-See [gh-scripts](scripts/gh-scripts)
+See [README.md](scripts/gh-scripts/README.md)[gh-scripts](scripts/gh-scripts)
 
 ### File IO
 
-See [fileIO](scripts/fileIO)
+See
+
+* [README.md](scripts/fileIO/README.md)
+* [runFIOPod.sh](scripts/fileIO/runFIOPod.sh)
+* [filePerfIOMetrics.groovy](scripts/fileIO/filePerfIOMetrics.groovy)
 
 ### Sample basic Pipelines
 
-See [pipelines](pipelines). 
+See 
+* [Jenkinsfile-benchmarks.groovy](pipelines/Jenkinsfile-benchmarks.groovy)
+* [pipelines](pipelines). 
 
 Note: These Pipelines can be developed further/adjusted 
 
@@ -246,7 +252,7 @@ for i in {1..10}; do
 done
 ```
 
-### Simple Pipeline End-to-End duration
+### Verify Simple Pipeline End-to-End duration
 
 Options
 
