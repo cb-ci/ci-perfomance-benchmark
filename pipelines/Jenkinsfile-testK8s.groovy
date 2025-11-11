@@ -40,7 +40,7 @@ pipeline {
                     echo "Starting benchmark run at: ${new Date(START_TIME_MS)}"
                 }
                 // Make the script executable
-                sh 'chmod -R +x *.sh' // Referenced the renamed script
+                sh "chmod  +x ${REPORT_SCRIPT}"
             }
         }
 
