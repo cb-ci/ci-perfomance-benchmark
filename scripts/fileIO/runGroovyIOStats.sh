@@ -2,8 +2,6 @@
 
 # This script sends a Groovy script to the Jenkins /scriptText endpoint.
 
-# Usage: ./send_groovy_to_jenkins.sh <JENKINS_HOST>  <JENKINS_API_TOKEN>
-
 source ../set-env.sh
 
 GROOVY_SCRIPT_PATH="$(pwd)/filePerfIOMetrics.groovy"
