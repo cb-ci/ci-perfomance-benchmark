@@ -81,7 +81,7 @@ pipeline {
                     echo "--- Running CPU Load Test (bc calculation) ---"
                     # Run the Bash script's CPU test function and capture the raw time output
                     # The script prints the time as the last line, making it easy to capture with backticks.
-                    CPU_TIME=\$(${REPORT_SCRIPT_DIR} run_cpu_test) 
+                    CPU_TIME=\$(${REPORT_SCRIPT} run_cpu_test) 
                     
                     # Extract only the numeric part (which the script echoes) and ensure it's exported
                     CPU_TIME_CLEAN=\$(echo "\${CPU_TIME}" | tail -1)
