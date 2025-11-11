@@ -21,7 +21,7 @@ format_time() {
 }
 
 # Function to run the CPU stress test and echo the runtime
-run_cpu_test() {
+cpu_test() {
     # We use a simple loop with 'bc' to perform intensive calculations,
     # as recursive functions like Fibonacci are difficult and inefficient in pure Bash.
 
