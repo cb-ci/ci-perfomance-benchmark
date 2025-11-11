@@ -1,15 +1,18 @@
 #!/bin/bash
-# Script to append a new line to testtrigger file and push to trigger Jenkins webhook
+# Script to append a new line to testtrigger file and push multiple commits
+# to trigger Jenkins webhooks repeatedly.
 
 set -e
 
+# --- Default Configuration ---
+REPO_DIR="${1:-..}"     # Path to your local Git repo
+BRANCH="${2:-main}"    # Target branch
+COUNT="${3:-1}"        # Number of pushes (default: 1)
+DELAY="${4:-3}"        # Delay (seconds) between pushes
 
-# --- Configuration ---
-REPO_DIR="${1:-..}"           # Path to your local Git repo (default = current dir)
-BRANCH="${2:-main}"          # Target branch (default = main)
-FILE="testtrigger"           # File to modify
+FILE="testtrigger"     # File to modify for triggering
 
-# --- Script start ---
+# --- Script Start ---
 cd "$REPO_DIR"
 
 if [ ! -f "$FILE" ]; then
@@ -17,15 +20,31 @@ if [ ! -f "$FILE" ]; then
   echo "# Test trigger file" > "$FILE"
 fi
 
-# Append a timestamp line
-echo "Trigger at $(date)" >> "$FILE"
+echo "=================================================="
+echo "📦 Repo:     $REPO_DIR"
+echo "🌿 Branch:   $BRANCH"
+echo "🔁 Pushes:   $COUNT"
+echo "⏱️ Delay:    ${DELAY}s"
+echo "=================================================="
 
-# Add and commit
-git add "$FILE"
-git commit -m "chore: trigger Jenkins webhook ($(date +'%Y-%m-%d %H:%M:%S'))"
+for ((i=1; i<=COUNT; i++)); do
+  echo ">>> Push #$i of $COUNT"
 
-# Push to remote
-echo "Pushing to branch '$BRANCH'..."
-git push origin "$BRANCH"
+  # Append timestamp line
+  echo "Trigger #$i at $(date)" >> "$FILE"
 
-echo "✅ Commit pushed successfully — Jenkins webhook should be triggered."
+  # Commit and push
+  git add "$FILE"
+  git commit -m "chore: test Jenkins webhook trigger #$i ($(date +'%Y-%m-%d %H:%M:%S'))"
+  git push origin "$BRANCH"
+
+  echo "✅ Commit #$i pushed successfully."
+
+  # Delay between pushes
+  if [ "$i" -lt "$COUNT" ]; then
+    echo "⏳ Waiting ${DELAY}s before next push..."
+    sleep "$DELAY"
+  fi
+done
+
+echo "🎉 All $COUNT commits pushed successfully — Jenkins webhooks should have triggered!"
