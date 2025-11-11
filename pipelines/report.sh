@@ -7,12 +7,12 @@ CPU_LOAD_ITERATIONS=15000 # Number of iterations for the 'bc' calculation stress
 # Input: total seconds (e.g., 3660.5)
 format_time() {
     local total_seconds=$1
-    local seconds_part=$(echo "$total_seconds % 60")
-    local minutes_total=$(echo "$total_seconds / 60")
-    local hours_total=$(echo "$minutes_total / 60")
-    local hours=$(printf "%.0f" "$hours_total")
-    local minutes=$(printf "%.0f" "$(echo "$minutes_total % 60")")
-    printf "%02d:%02d:%04.1f" "$hours" "$minutes" "$seconds_part"
+    awk -v total_seconds="$total_seconds" 'BEGIN {
+        h = int(total_seconds / 3600);
+        m = int(total_seconds / 60) % 60;
+        s = total_seconds - (h * 3600) - (m * 60);
+        printf "%02d:%02d:%04.1f", h, m, s;
+    }'
 }
 # Function to run the CPU stress test and echo the runtime
 cpu_test() {
@@ -24,8 +24,7 @@ cpu_test() {
     openssl speed -elapsed -evp aes-256-cbc > /dev/null 2>&1
     local end_time=$(date +%s.%N)
     # Calculate duration
-    # local runtime=$(echo "$end_time - $start_time" | bc)
-    local runtime=$(( end_time - start_time ))
+    local runtime=$(awk -v end_time="$end_time" -v start_time="$start_time" 'BEGIN { print end_time - start_time }')
     echo "Extracted CPU Runtime: ${runtime}s"
     echo "$runtime" # Echo the raw runtime for Jenkins to capture
 }
