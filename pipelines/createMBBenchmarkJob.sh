@@ -1,4 +1,4 @@
-#! /biun/bash
+#! /bin/bash
 
 # Required variables:
 
