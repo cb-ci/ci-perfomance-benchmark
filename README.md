@@ -49,6 +49,7 @@ Compare the performance of two CI Controller setups:
 * **Target Controller:** Running on modern infrastructure (EKS with EFS volume).
 
 Both controllers have identical configurations, including plugins, agent setups, and reference pipelines.
+(The exact plugins and configurations can differ slightly depending on the CI approach — traditional (VM-based) vs. modern (Kubernetes-based). This should not be critical)
 
 ## Scope
 
