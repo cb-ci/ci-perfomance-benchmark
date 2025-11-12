@@ -216,7 +216,9 @@ TBD
 
 ### Managing Repos, Branches and PRs
 
-See [README.md](scripts/gh-scripts/README.md)[gh-scripts](scripts/gh-scripts)
+See 
+* [README.md](scripts/gh-scripts/README.md)
+
 
 ### File IO
 
