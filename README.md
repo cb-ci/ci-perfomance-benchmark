@@ -188,6 +188,26 @@ To isolate the performance impact of specific jobs:
 
 ---
 
+## Quick Start
+
+### Get the Baseline
+
+On each Controller (VM/EKS)
+* Run Benchmark Pipelines: See [README.md](pipelines/README.md)
+* Run Random FileIO test: [README.md](scripts/fileIO/README.md)
+* Trigger builds: 
+  * Option: Use Locust so trigger build [README.md](scripts/loadtestsLocust/README.md)
+  * See 
+    * [triggerSimplePipeline.sh](scripts/triggerSimplePipeline.sh)
+    * [triggerWebhook.sh](scripts/triggerWebhook.sh)
+* Run each Pipeline multiple times to get more accurate data
+* Compare the results and metrics, see chapter ***Verify Simple Pipeline End-to-End duration***
+
+
+### Run production like Pipelines (yours)
+
+TBD
+
 
 ## Practical Snippets
 
@@ -207,7 +227,6 @@ See
 
 See 
 * [Jenkinsfile-benchmarks.groovy](pipelines/Jenkinsfile-benchmarks.groovy)
-* [pipelines](pipelines). 
 
 Note: These Pipelines can be developed further/adjusted 
 
@@ -216,6 +235,8 @@ Note: These Pipelines can be developed further/adjusted
 See the [Locust README](scripts/loadtestsLocust/README.md) for details on setting up and running Locust tests.
 
 ### PR Storm with `gh` CLI
+
+See also [README.md](scripts/gh-scripts/README.md) 
 
 ```bash
 org=perf
@@ -257,7 +278,7 @@ done
 
 Options
 
-* A:Setup Open telemtry plugin and anayse/compare the traces
+* A:Setup Open telemetry plugin and anayse/compare the traces
 * B: Use the Pipeline Explorer or Console log
 * C: Use the UI build summary page
 * D: Simple Pipeline End-to-End duration time can also be retrieved by the build_url api json endpoint: 
