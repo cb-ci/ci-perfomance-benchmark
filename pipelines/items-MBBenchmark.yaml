@@ -3,7 +3,7 @@ removeStrategy:
   items: NONE
 items:
 - kind: multibranch
-  name: MB-Bencmark
+  name: ${}
   displayName: MB-Bencmark
   orphanedItemStrategy:
     defaultOrphanedItemStrategy:
@@ -34,10 +34,10 @@ items:
                     gitHubTrustPermissions: {
                     }
                   strategyId: 2
-            repoOwner: ${GH_REPO_OWNER}
+            repoOwner: ${GIT_REPO_OWNER}
             credentialsId: ${GIT_HUP_APP_CREDENTIAL_ID}
             id: xxx-xxx-xxx
-            repository: ${GH_REPO_NAME}   # ci-perfomance-benchmark
+            repository: ${GIT_REPO_NAME}   # ci-perfomance-benchmark
             configuredByUrl: true
             repositoryUrl: https://github.com/${GH_REPO_OWNER}/${GH_REPO}.git
         strategy:

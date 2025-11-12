@@ -5,17 +5,15 @@
 # Controller URL
 export JENKINS_HOST="https://ci.example.org"
 export JENKINS_API_TOKEN="USER:XXX"
-export JENKINS_HOST="https://dev.sda.acaternberg.flow-training.beescloud.com/casc-pipeline-templates/"
-export JENKINS_API_TOKEN="admin:11bdda92f92b9ede621141b39653603d5e"
 
 
 # JobName
-export JOB_NAME="TEST_JOB_1"
+export JOB_NAME="MB-TEST_JOB_1"
 # The GIT Organisation name where the Application repository is located
 export GIT_REPO_OWNER="MY-GITHUB_ORG"
 
 # The GIT repo name (Your App reponame)
-export GIT_REPO="ci-perfomance-benchmarks"
+export GIT_REPO_NAME="ci-perfomance-benchmarks"
 
 # The credentials id of your GitHub App credentials
 #see https://docs.cloudbees.com/docs/cloudbees-ci/latest/traditional-admin-guide/github-app-auth
