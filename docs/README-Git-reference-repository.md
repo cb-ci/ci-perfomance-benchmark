@@ -1,7 +1,7 @@
 # Understanding Git Reference Repositories
 
 A **Git reference repository** is essentially a **local cache of Git objects** (commits, trees, blobs, tags, etc.) that other Git clones can reuse instead of downloading everything again from the remote.
-
+See also https://docs.cloudbees.com/docs/cloudbees-ci-kb/latest/client-and-managed-controllers/how-to-create-and-use-a-git-reference-repository
 ---
 
 ## 🔧 How it works
