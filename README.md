@@ -106,8 +106,8 @@ The following key performance indicators (KPIs) will be tracked:
 ## Tooling Stack
 
 * **Load Generation:**
-  * **Locust:** (Optional):For hitting Jenkins job REST API to trigger builds. [Locust README](scripts/loadtestsLocust/README.md)
-  * **gh CLI:** For creating commits and pull requests at scale.
+  * **Locust:** (Optional): For hitting Jenkins job REST API to trigger builds. See [Locust README](scripts/loadtestsLocust/README.md)
+  * **gh CLI:** For creating commits and pull requests at scale. See [README.md](scripts/gh-scripts/README.md)
   * **shell scripts** to trigger builds
     * [triggerWebhook.sh](scripts/triggerWebhook.sh)
     * [triggerSimplePipeline.sh](scripts/triggerSimplePipeline.sh)
@@ -172,12 +172,12 @@ Suggestions for test/benchmark Pipelines
 * A simple reference MB Pipeline that
   * clones code (small to medium size repo)
   * writes an artifact to JENKINS_HOME (step: archiveArtifacts, to measure time by writing to the volume EBS vs EFS)
-  * See this pipelines for starting point: [pipelines](pipelines) (Need to be developed/adjusted further)
+  * See this pipelines for starting point: [README.md](pipelines/README.md)[pipelines](pipelines) (Need to be developed/adjusted further)
 * A reference/representative (real production Pipeline) 
   * fork the repository (single or few branches only)
   * adjust the Pipeline fork code/branch so it doesn't damage anything in production if it gets executed
 * test/compare on both Pipelines
-  * MI Indexing and Scanning
+  * MultiBranchSourceJob Indexing and Scanning
   * Scaling the number of builds/commits (1,5,10)
   * Scaling the number of PRs (1,5,10)
   * Build time/performance
