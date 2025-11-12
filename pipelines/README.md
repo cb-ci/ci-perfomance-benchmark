@@ -12,15 +12,18 @@ The Pipelines focus on:
 * File IO (Sequential only, for random see [README.md](../scripts/fileIO/README.md))
 * CPU
 * Memory
+* Pipeline build duration
 
 ## Prerequisites
-- Jenkins instance (CloudBees or open-source) with:
+- CloudBees CI instance with:
     - Pipeline (Declarative) plugin
-    - Kubernetes plugin (for `Jenkinsfile-StressNG.groovy`)
+    - Optional: Kubernetes plugin (for `Jenkinsfile-StressNG.groovy`)
     - Credentials: GitHub App or token-based credentials
-    - `triggerRemoteJob` plugin (for `Jenkinsfile-root.groovy`)
+    - CloudBees `triggerRemoteJob` plugin (for `Jenkinsfile-root.groovy`)
 - Bash shell utilities (`bash`, `dd`, `curl`, `awk`, `openssl`)
-- Access to a Kubernetes cluster (for Pod agents)
+- Access to a Kubernetes cluster 
+  - optional: for Pod agents
+  - to get some base metrics (like `kubectl top ...`)
 
 ## Repository Structure
  ```text
@@ -43,6 +46,7 @@ The Pipelines focus on:
 - Demonstrates a parent Declarative pipeline (agent none) that:
     - Prints a greeting (`echo 'Hello World'`)
     - Uses `triggerRemoteJob` to invoke a child pipeline (`test-triggers/child`)
+      - see https://docs.cloudbees.com/docs/cloudbees-ci-kb/latest/client-and-managed-controllers/trigger-jobs-across-controllers
     - Shows parameter passing between pipelines
 - Requires two script approvals:
   ```
@@ -60,6 +64,7 @@ The Pipelines focus on:
 - Runs on any agent (`agent any`)
 - Invokes a custom step `mockLoad 10` inside a `script{}` block
 - Useful for testing step-controller logic or plugin development
+- see https://www.jenkins.io/doc/pipeline/steps/mock-load-builder/
 
 ### Jenkinsfile-benchmarks.groovy
 - Declarative pipeline that benchmarks:
@@ -97,21 +102,19 @@ The Pipelines focus on:
 
 ## Getting Started
 1. Clone this repository on your Jenkins server or local machine.
-2. Update `set-env.sh` with your Jenkins URL, API token, and job path.
-3. Source the environment: `source set-env.sh`
-4. Provision the multibranch benchmark job:
+2. Provision the multibranch benchmark job:
    ```bash
    ./createMBBenchmarkJob.sh
    ```
-5. In Jenkins, run:
+3. In Jenkins, run:
     - `MB-Bencmark` multibranch job for benchmarks.
     - `test-triggers/child` (if manually triggered) via `Jenkinsfile-child.groovy`.
-6. Observe reports and archived artifacts on build pages.
+4. Observe reports and archived artifacts on build pages.
 
 ## Troubleshooting & Tips
-- Ensure required plugins (`Pipeline`, `Kubernetes`, `C-as-Code`, `Trigger Remote Job`) are installed.
+- Ensure required plugins (`Pipeline`, `Kubernetes`, `CasC`, `Trigger Remote Job`) are installed.
 - Review script approvals under **Manage Jenkins → In-Process Script Approval**.
-- Check agent labels and Kubernetes cluster connectivity.
+- Check agent labels and Kubernetes cluster connectivity (if required).
 
 ## Contributing
 - To add a new pipeline:
