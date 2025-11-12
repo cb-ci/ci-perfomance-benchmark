@@ -106,8 +106,11 @@ The following key performance indicators (KPIs) will be tracked:
 ## Tooling Stack
 
 * **Load Generation:**
-  * **Locust:** For hitting Jenkins job REST API to trigger builds. [Locust README](scripts/loadtestsLocust/README.md)
+  * **Locust:** (Optional):For hitting Jenkins job REST API to trigger builds. [Locust README](scripts/loadtestsLocust/README.md)
   * **gh CLI:** For creating commits and pull requests at scale.
+  * **shell scripts** to trigger builds
+    * [triggerWebhook.sh](scripts/triggerWebhook.sh)
+    * [triggerSimplePipeline.sh](scripts/triggerSimplePipeline.sh)
 * **Orchestration:**
   * Target Controller: A dedicated **"Load Orchestrator" Jenkins controller** to manage test execution.
   * Source Controller: A dedicated **"Load Orchestrator" Jenkins controller** to manage test execution. If a Production controller be carefully with the workload simulations
