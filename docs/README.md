@@ -65,27 +65,53 @@ This document outlines the recommended setup for **GitHub Branch Source** in Mul
 
 ---
 
-## GitHub Organizations – Key Limits & Guidance
+# GitHub Organizations – Key Limits & Guidance
 
-* **Teams:** up to **1,500** per org; **members:** up to **10,000**; **team size:** up to **5,000**. Prefer **nested teams**; avoid per-repo teams. *(See: [Team sync usage limits](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-saml-single-sign-on-for-your-organization/managing-team-synchronization-for-your-organization#usage-limits), [About teams](https://docs.github.com/en/organizations/organizing-members-into-teams/about-teams), [Repository limits](https://docs.github.com/en/repositories/creating-and-managing-repositories/repository-limits)).*
-* **GitHub Apps:** up to **100 apps registered** per org; **installations are unlimited**. *(See: [Registering a GitHub App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app), [Installing a GitHub App](https://docs.github.com/en/apps/using-github-apps/installing-a-github-app-from-github-marketplace-for-your-organizations)).*
-* **Team sync:** large syncs degrade performance—sync only essential IdP groups. *(See: [SAML / team sync](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-saml-single-sign-on-for-your-organization/managing-team-synchronization-for-your-organization)).*
+## **Team Synchronization**
 
-There are usage limits for the team synchronization feature. Exceeding these limits will lead to a degradation in performance and may cause synchronization failures.
-* Maximum number of members in a GitHub team: 5,000
-* Maximum number of members in a GitHub organization: 10,000
-* Maximum number of teams in a GitHub organization: 1,500
-* See https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-saml-single-sign-on-for-your-organization/managing-team-synchronization-for-your-organization#usage-limits
+### ⚙️ Overview
 
+The **Team Sync** feature enables automatic synchronization of your GitHub organization teams with identity provider (IdP) groups (e.g., Okta, Entra ID, Ping).
 
-**1,500 teams per organization.**
-GitHub’s docs note a cap of **1,500 teams** in a single org (mentioned in their team-sync limits, but it applies to orgs generally). ([GitHub Docs][1])
+> ⚠️ **Important:** Exceeding usage limits may degrade performance or cause synchronization failures.
 
-Tips if you’re nearing the cap:
+For details, see the official GitHub documentation:
+👉 [Managing Team Synchronization for Your Organization](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-saml-single-sign-on-for-your-organization/managing-team-synchronization-for-your-organization)
 
-* Avoid creating per-repo “admin/write” teams; reuse broader teams and grant repo access via team permissions.
-* Use **nested teams** to model hierarchy instead of many flat teams. ([GitHub Docs][2])
-* If you sync from Entra ID/Okta, select only essential groups—synced teams still count toward the 1,500. ([GitHub Docs][1])
+---
+
+### 📊 **Usage Limits**
+
+| Resource                     | Maximum    | Notes                                            |
+| ---------------------------- | ---------- | ------------------------------------------------ |
+| Members per **team**         | **5,000**  | Large team syncs degrade performance.            |
+| Members per **organization** | **10,000** | Total unique members allowed.                    |
+| Teams per **organization**   | **1,500**  | Includes both manually created and synced teams. |
+
+> 💡 **Tip:** Large synchronized groups should be avoided — sync only essential IdP groups required for access control.
+
+---
+
+### 🚀 **Best Practices & Optimization Tips**
+
+* **Reuse existing teams** instead of creating per-repository “admin/write” teams.
+  Use team-based permissions to manage repo access collectively.
+* **Model hierarchy with nested teams**, rather than maintaining many flat teams.
+  *(See: [About Teams](https://docs.github.com/en/organizations/organizing-members-into-teams/about-teams))*
+* When syncing from **Entra ID** or **Okta**, select **only essential groups**.
+  Synced teams count toward the 1,500-team limit.
+* Regularly **review unused teams and memberships** to prevent sync bloat.
+* If nearing caps, consider **manual team management** for smaller subgroups.
+
+---
+
+### 🧩 **Related GitHub Limits**
+
+| Feature                      | Limit                   | Reference                                                                                                                                           |
+| ---------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub Apps per organization | **100 registered apps** | [Registering a GitHub App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app)                  |
+| GitHub App installations     | **Unlimited**           | [Installing a GitHub App](https://docs.github.com/en/apps/using-github-apps/installing-a-github-app-from-github-marketplace-for-your-organizations) |
+| Repository limits            | *Varies by plan*        | [Repository Limits](https://docs.github.com/en/repositories/creating-and-managing-repositories/repository-limits)                                   |
 
 
 Refs consolidated in **Quick Links → GitHub**.
